@@ -42,13 +42,20 @@ const Deals = () => {
 
   const [deals, setDeals] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
     let isMounted = true;
     const loadDeals = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
         const data = await res.json();
-        if (isMounted) setDeals(Array.isArray(data) ? data : []);
+        
+        if (isMounted) {
+          const filteredDeals = Array.isArray(data) 
+            ? data.filter(item => item.sectionTags && item.sectionTags.includes("deals"))
+            : [];
+            
+          setDeals(filteredDeals);
+        }
       } catch (err) {
         if (isMounted) setDeals([]);
       }

@@ -8,8 +8,8 @@ import { useWishlist } from '@/src/app/context/WishlistContext';
 import { ColorModeContext } from '../../context/ThemeContext';
 import { useCart } from '../../context/CartContext';
 import {
-  useTheme,AppBar, Toolbar, Typography, Box, IconButton, InputBase,
-  Button, Stack, MenuItem, Select, Container, Badge, Drawer, List, ListItem, Menu, Divider
+  useTheme, AppBar, Toolbar, Typography, Box, IconButton, InputBase,
+  Button, Stack, MenuItem, Select, Container, Badge, Drawer, List, ListItem, Menu, Divider, Paper
 } from '@mui/material';
 import {
   Person, Chat, Favorite, ShoppingCart,
@@ -21,7 +21,7 @@ const BrandHeader = () => {
   const [mounted, setMounted] = useState(false);
   const themeMode = useContext(ColorModeContext);
   const { cartItems } = useCart();
-  const { wishlistItems } = useWishlist(); 
+  const { wishlistItems } = useWishlist();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -43,7 +43,7 @@ const BrandHeader = () => {
   useEffect(() => {
     const fetchHeaderData = async () => {
       try {
-        const res = await fetch('/api/products');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
         const data = await res.json();
         const productsArray = Array.isArray(data) ? data : (data.products || []);
         setDbProducts(productsArray);
@@ -51,7 +51,7 @@ const BrandHeader = () => {
         setProductCategories(uniqueCats);
       } catch (err) {
         console.error("Failed to fetch header data", err);
-        setDbProducts([]); 
+        setDbProducts([]);
       }
     };
     if (mounted) fetchHeaderData();
@@ -105,6 +105,7 @@ const BrandHeader = () => {
     }
     const query = params.toString();
     router.push(query ? `/shop?${query}` : '/shop');
+    setShowSuggestions(false);
   };
 
   const handleProfileOpen = (event) => setProfileAnchorEl(event.currentTarget);
@@ -114,16 +115,16 @@ const BrandHeader = () => {
     if (path) router.push(path);
   };
 
-  if (!mounted) return <Box sx={{ height: '70px', bgcolor: 'background.paper' }} />; 
+  if (!mounted) return <Box sx={{ height: '70px', bgcolor: 'background.paper' }} />;
 
   return (
-    <AppBar 
-      position="sticky" color="inherit" elevation={0} 
+    <AppBar
+      position="sticky" color="inherit" elevation={0}
       sx={{ top: 0, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', zIndex: 1100, backgroundImage: 'none' }}
     >
       <Container maxWidth={false} sx={{ maxWidth: '1280px', px: 2, margin: '0 auto' }}>
         <Toolbar disableGutters sx={{ flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', py: { xs: 1.5, md: 3 }, gap: { xs: 1, md: 4 } }}>
-          
+
           <Stack direction="row" alignItems="center" sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'space-between' }}>
             <Stack direction="row" alignItems="center">
               <IconButton onClick={() => setDrawerOpen(true)} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
@@ -141,7 +142,6 @@ const BrandHeader = () => {
             <Stack direction="row" alignItems="center" spacing={1} sx={{ display: { xs: 'flex', md: 'none' } }}>
               <HeaderAction icon={<Person />} label="Profile" mobileHideLabel onClick={handleProfileOpen} />
               <IconButton onClick={themeMode.toggleColorMode}>
-                {/* SUN for Dark Mode, MOON for Light Mode */}
                 {isDark ? <WbSunny sx={{ color: '#FFD700' }} /> : <DarkMode sx={{ color: '#4A5568' }} />}
               </IconButton>
               <Link href="/cart" style={{ textDecoration: 'none' }}>
@@ -154,8 +154,17 @@ const BrandHeader = () => {
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', flex: 1, maxWidth: '660px', position: 'relative' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', height: '44px', border: '2px solid', borderColor: '#0D6EFD', borderRadius: '8px', overflow: 'hidden', bgcolor: 'background.paper' }}>
               <InputBase
-                placeholder="Search" value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setShowSuggestions(true); }}
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch();
+                  }
+                }}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 sx={{ ml: 2, flex: 1, fontSize: '0.95rem', color: 'text.primary' }}
@@ -175,6 +184,29 @@ const BrandHeader = () => {
                 Search
               </Button>
             </Box>
+
+            {/* Suggestion Dropdown */}
+            {showSuggestions && filteredSuggestions.length > 0 && (
+              <Paper 
+                elevation={3} 
+                sx={{ position: 'absolute', top: '100%', left: 0, right: 0, mt: 1, zIndex: 1500, borderRadius: '8px', overflow: 'hidden' }}
+              >
+                <List disablePadding>
+                  {filteredSuggestions.map((suggestion, idx) => (
+                    <MenuItem 
+                      key={idx} 
+                      onClick={() => {
+                        setSearchTerm(suggestion);
+                        handleSearch();
+                      }}
+                      sx={{ py: 1.5 }}
+                    >
+                      <Typography variant="body2">{suggestion}</Typography>
+                    </MenuItem>
+                  ))}
+                </List>
+              </Paper>
+            )}
           </Box>
 
           {/* Desktop Header Actions */}
@@ -185,9 +217,8 @@ const BrandHeader = () => {
             <Link href="/cart" style={{ textDecoration: 'none' }}>
               <HeaderAction icon={<Badge badgeContent={cartCount} color="error"><ShoppingCart /></Badge>} label="My cart" />
             </Link>
-            
+
             <IconButton onClick={themeMode.toggleColorMode} size="small">
-              {/* SWAP ICON: If Dark, show Sun. If Light, show Moon */}
               {isDark ? (
                 <WbSunny fontSize="small" sx={{ color: '#FFD700' }} />
               ) : (
@@ -199,9 +230,9 @@ const BrandHeader = () => {
       </Container>
 
       {/* Profile Menu */}
-      <Menu 
-        anchorEl={profileAnchorEl} 
-        open={Boolean(profileAnchorEl)} 
+      <Menu
+        anchorEl={profileAnchorEl}
+        open={Boolean(profileAnchorEl)}
         onClose={handleProfileClose}
         PaperProps={{ sx: { width: '220px', mt: 1, borderRadius: '8px' } }}
       >
@@ -240,7 +271,7 @@ const BrandHeader = () => {
 };
 
 const HeaderAction = ({ icon, label, onClick, mobileHideLabel }) => (
-  <Stack onClick={onClick} sx={{ cursor: 'pointer', minWidth: { xs: 'auto', md: '60px' }, color: '#979797', '&:hover': { color: '#0D6EFD' } }}>
+  <Stack alignItems="center" onClick={onClick} sx={{ cursor: 'pointer', minWidth: { xs: 'auto', md: '60px' }, color: '#979797', '&:hover': { color: '#0D6EFD' } }}>
     {icon}
     <Typography variant="caption" sx={{ fontSize: '12px', mt: 0.5, display: mobileHideLabel ? { xs: 'none', md: 'block' } : 'block' }}>
       {label}

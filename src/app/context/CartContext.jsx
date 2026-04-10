@@ -8,30 +8,16 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-    const fetchCart = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/cart');
-        const data = await res.json();
-
-        if (data && data.items) {
-          const formattedItems = data.items.map(item => ({
-            ...item.productId, 
-            qty: item.qty,
-            _id: item.productId._id,
-            id: item.productId._id
-          }));
-          
-          setCartItems(formattedItems);
-        }
-      } catch (error) {
-        console.error("Cart fetch failed:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCart();
-  }, []);
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`)
+    .then(res => {
+      if (!res.ok) throw new Error("Network response was not ok");
+      return res.json();
+    })
+    .then(data => {
+      setCartItems(Array.isArray(data) ? data : []);
+    })
+    .catch(err => console.error("Cart fetch failed:", err));
+}, []);
 
   const updateQuantity = async (productId, newQty) => {
     setCartItems((prevItems) =>

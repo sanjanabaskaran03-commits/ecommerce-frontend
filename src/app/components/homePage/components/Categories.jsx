@@ -12,28 +12,42 @@ const Categories = () => {
 
   useEffect(() => {
     let isMounted = true;
+    
     const loadSections = async () => {
       try {
-        const [homeRes, electronicsRes] = await Promise.all([
-          fetch('/api/ecommerce?tag=home-outdoor'),
-          fetch('/api/ecommerce?tag=consumer-electronics,gadgets'),
-        ]);
-        const homeData = await homeRes.json();
-        const electronicsData = await electronicsRes.json();
+        // We fetch all products once to save on network requests
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
+        const allProducts = await res.json();
 
-        if (!isMounted) return;
+        if (!isMounted || !Array.isArray(allProducts)) return;
 
-        setHomeItems(Array.isArray(homeData) ? homeData : []);
-        setElectronicsItems(Array.isArray(electronicsData) ? electronicsData : []);
+        // Filter for Home & Outdoor section
+        const home = allProducts.filter(item => 
+          item.sectionTags && item.sectionTags.includes("home-outdoor")
+        );
+
+        // Filter for Electronics & Gadgets section
+        const electronics = allProducts.filter(item => 
+          item.sectionTags && (
+            item.sectionTags.includes("consumer-electronics") || 
+            item.sectionTags.includes("gadgets")
+          )
+        );
+
+        setHomeItems(home);
+        setElectronicsItems(electronics);
+
       } catch (err) {
-        if (!isMounted) {
-          return;
+        console.error("Fetch error:", err);
+        if (isMounted) {
+          setHomeItems([]);
+          setElectronicsItems([]);
         }
-        setHomeItems([]);
-        setElectronicsItems([]);
       }
     };
+
     loadSections();
+    
     return () => {
       isMounted = false;
     };
