@@ -68,13 +68,14 @@ const CartItem = () => {
                           src={item.img}
                           alt={item.title}
                           fill
+                          sizes="(max-width: 900px) 70px, 80px"
                           style={{ objectFit: 'contain', padding: '5px' }}
                         />
                       </Box>
 
                       {/* Item Details */}
                       <Box sx={{ flexGrow: 1 }}>
-                        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                        <Stack direction="row" justifyContent="space-between" sx={{ alignItems: "flex-start" }}>
                           <Box>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, textAlign: "left" }}>
                               {item.title}
@@ -130,7 +131,7 @@ const CartItem = () => {
 
                     {/* Mobile View Controls */}
                     <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                      <Stack direction="row" alignItems="center" sx={{ border: '1px solid #E3E8EE', borderRadius: '4px' }}>
+                      <Stack direction="row" sx={{ border: '1px solid #E3E8EE', borderRadius: '4px', alignItems: "center" }}>
                         <Button
                           onClick={() => updateQuantity(item.id, Math.max(1, (item.qty || 1) - 1))}
                           sx={{ minWidth: 40, color: 'text.primary', borderRight: '1px solid #E3E8EE', borderRadius: 0 }}

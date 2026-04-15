@@ -68,7 +68,10 @@ const ListContent = () => {
             />
             
             {activeFilters.length > 0 && (
-              <Stack direction="row" flexWrap="wrap" gap={1} alignItems="center" sx={{ mb: 2, mt: 1 }}>
+              <Stack
+                direction="row"
+                sx={{ mb: 2, mt: 1, flexWrap: "wrap", gap: 1, alignItems: "center" }}
+              >
                 {activeFilters.map((filter) => (
                   <Chip
                     key={filter}

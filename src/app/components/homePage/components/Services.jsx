@@ -13,7 +13,7 @@ import Service2 from '@/public/images/homepage/services/service2.png';
 import Service3 from '@/public/images/homepage/services/service3.png';
 import Service4 from '@/public/images/homepage/services/service4.png';
 
-const MotionPaper = motion(Paper);
+const MotionPaper = motion.create(Paper);
 
 const services = [
   {
@@ -90,11 +90,8 @@ const Services = () => {
                   src={service.img}
                   alt={service.title}
                   fill
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  }}
+                  sizes="(max-width: 900px) 100vw, 300px"
+                  style={{ objectFit: 'cover' }}
                 />
                 <Box
                   sx={{

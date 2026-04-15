@@ -4,7 +4,7 @@ import React from 'react';
 import { Paper, Box, Typography, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 
-const MotionPaper = motion(Paper);
+const MotionPaper = motion.create(Paper);
 
 const RecommendedCard = ({ img, price, description }) => {
   const theme = useTheme();

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -37,6 +37,7 @@ const BrandHeader = () => {
   const [productCategories, setProductCategories] = useState([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -82,19 +83,20 @@ const BrandHeader = () => {
       .slice(0, 6);
   }, [searchTerm, searchSuggestions]);
 
-  const toCategoryLabel = (value) => {
+  const toCategoryLabel = useCallback((value) => {
     if (!value) return 'All category';
     const normalized = value.replace(/-/g, ' ').toLowerCase();
     const match = productCategories.find(c => c.toLowerCase() === normalized);
     return match || 'All category';
-  };
+  }, [productCategories]);
 
   useEffect(() => {
     const term = searchParams.get('search') || '';
     const category = searchParams.get('category');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchTerm(term);
     setSearchCategory(toCategoryLabel(category));
-  }, [searchParams, productCategories]);
+  }, [searchParams, productCategories, toCategoryLabel]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -125,8 +127,8 @@ const BrandHeader = () => {
       <Container maxWidth={false} sx={{ maxWidth: '1280px', px: 2, margin: '0 auto' }}>
         <Toolbar disableGutters sx={{ flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', py: { xs: 1.5, md: 3 }, gap: { xs: 1, md: 4 } }}>
 
-          <Stack direction="row" alignItems="center" sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'space-between' }}>
-            <Stack direction="row" alignItems="center">
+          <Stack direction="row" sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'space-between', alignItems: "center" }}>
+            <Stack direction="row" sx={{ alignItems: "center" }}>
               <IconButton onClick={() => setDrawerOpen(true)} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
                 <MenuIcon />
               </IconButton>
@@ -139,7 +141,7 @@ const BrandHeader = () => {
             </Stack>
 
             {/* Mobile Header Icons */}
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <Stack direction="row" spacing={1} sx={{ display: { xs: 'flex', md: 'none' }, alignItems: "center" }}>
               <HeaderAction icon={<Person />} label="Profile" mobileHideLabel onClick={handleProfileOpen} />
               <IconButton onClick={themeMode.toggleColorMode}>
                 {isDark ? <WbSunny sx={{ color: '#FFD700' }} /> : <DarkMode sx={{ color: '#4A5568' }} />}
@@ -210,7 +212,7 @@ const BrandHeader = () => {
           </Box>
 
           {/* Desktop Header Actions */}
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center" }}>
             <HeaderAction icon={<Person />} label="Profile" onClick={handleProfileOpen} />
             <HeaderAction icon={<Chat />} label="Message" />
             <HeaderAction icon={<Badge badgeContent={wishlistCount} color="error"><Favorite /></Badge>} label="Wishlist" />
@@ -241,13 +243,13 @@ const BrandHeader = () => {
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => handleProfileAction('/profile')}>
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
             <Person fontSize="small" sx={{ color: '#0D6EFD' }} />
             <Typography variant="body2">My Profile</Typography>
           </Stack>
         </MenuItem>
         <MenuItem onClick={() => handleProfileAction('/logout')}>
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
             <Logout fontSize="small" sx={{ color: 'error.main' }} />
             <Typography variant="body2" sx={{ color: 'error.main' }}>Logout</Typography>
           </Stack>
@@ -271,7 +273,7 @@ const BrandHeader = () => {
 };
 
 const HeaderAction = ({ icon, label, onClick, mobileHideLabel }) => (
-  <Stack alignItems="center" onClick={onClick} sx={{ cursor: 'pointer', minWidth: { xs: 'auto', md: '60px' }, color: '#979797', '&:hover': { color: '#0D6EFD' } }}>
+  <Stack onClick={onClick} sx={{ cursor: 'pointer', minWidth: { xs: 'auto', md: '60px' }, color: '#979797', '&:hover': { color: '#0D6EFD' }, alignItems: "center" }}>
     {icon}
     <Typography variant="caption" sx={{ fontSize: '12px', mt: 0.5, display: mobileHideLabel ? { xs: 'none', md: 'block' } : 'block' }}>
       {label}

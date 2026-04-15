@@ -43,7 +43,7 @@ const formatCategory = (str) => {
           Items in <b>{formatCategory(category)}</b>
         </Typography>
 
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -94,7 +94,7 @@ const formatCategory = (str) => {
         
         sx={{ display: { xs: 'flex', md: 'none' } ,justifyContent:"space-between",alignItems:"center" }}
       >
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
           <Button 
             variant="outlined" 
             onClick={handleDrawerToggle(true)}
@@ -147,7 +147,7 @@ const formatCategory = (str) => {
           sx: { width: '280px', p: 2 }
         }}
       >
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+        <Stack direction="row" justifyContent="space-between" sx={{ mb: 1, alignItems: "center" }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>Filters</Typography>
           <IconButton onClick={handleDrawerToggle(false)}>
             <CloseIcon />

@@ -77,7 +77,7 @@ const Description = () => {
             </TableContainer>
             <Stack spacing={1}>
               {features.map((text, i) => (
-                <Stack key={i} direction="row" spacing={1} alignItems="center">
+                <Stack key={i} direction="row" spacing={1} sx={{ alignItems: "center" }}>
                   <CheckIcon sx={{ fontSize: 18, color: '#8B96A5' }} />
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>{text}</Typography>
                 </Stack>
@@ -91,7 +91,7 @@ const Description = () => {
           <Stack spacing={3}>
             {[1, 2].map((review) => (
               <Box key={review}>
-                <Stack direction="row" spacing={2} alignItems="center" mb={1}>
+                <Stack direction="row" spacing={2} mb={1} sx={{ alignItems: "center" }}>
                   <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.light' }}>U</Avatar>
                   <Box>
                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Verified Customer</Typography>
@@ -124,7 +124,7 @@ const Description = () => {
 
       case 'About seller':
         return (
-          <Stack direction="row" spacing={3} alignItems="flex-start">
+          <Stack direction="row" spacing={3} sx={{ alignItems: "flex-start" }}>
             <Box sx={{ width: 60, height: 60, bgcolor: '#eff2f4', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#8B96A5' }}>S</Typography>
             </Box>
@@ -149,8 +149,7 @@ const Description = () => {
         direction="row"
         spacing={2}
         justifyContent="space-between"
-        alignItems="stretch"
-        sx={{ mt: 3, mb: 5 }}
+        sx={{ mt: 3, mb: 5, alignItems: "stretch" }}
       >
         {/* Main Content (Left) */}
         <Stack sx={{ flex: 3 }}>
@@ -212,9 +211,8 @@ const Description = () => {
                   key={item._id} 
                   direction="row" 
                   spacing={2} 
-                  alignItems="center"
                   onClick={() => router.push(`/detail/${item._id}`)}
-                  sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 } }}
+                  sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 }, alignItems: "center" }}
                 >
                   <Box sx={{ 
                     width: 80, height: 80, border: '1px solid #E0E7EE', borderRadius: '6px', p: 1,

@@ -61,7 +61,7 @@ const Footer = () => {
           textAlign: "left" 
         }}>
           <Stack spacing={2}>
-            <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
               <Box sx={{ bgcolor: '#0D6EFD', borderRadius: '8px', p: 0.8, display: 'flex' }}>
                 <ShoppingBag sx={{ color: '#fff', fontSize: '1.5rem' }} />
               </Box>
@@ -113,7 +113,7 @@ const Footer = () => {
           flex: { xs: '1 1 100%', sm: '1 1 100%', md: '0 0 124px' },
           mt: { xs: 2, md: 0 }
         }}>
-          <Stack spacing={1.5} direction={{ xs: 'row', md: 'column' }} flexWrap="wrap">
+          <Stack spacing={1.5} direction={{ xs: 'row', md: 'column' }} sx={{ flexWrap: "wrap" }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: '16px', color: isDark ? 'text.primary' : '#1c1c1c', width: '100%' }}>
               Get app
             </Typography>

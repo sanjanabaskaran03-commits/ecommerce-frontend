@@ -63,9 +63,11 @@ const SavedForLater = () => {
 
         <Stack 
           direction="row" 
-          flexWrap="wrap" 
-          gap={{ xs: 2, sm: 3 }} 
-          sx={{ justifyContent: { xs: 'center', sm: 'space-between' } }}
+          sx={{
+            justifyContent: { xs: 'center', sm: 'space-between' },
+            flexWrap: "wrap",
+            gap: { xs: 2, sm: 3 },
+          }}
         >
           {productsArray.map((item, index) => {
   const isAdded = cartItems.some(cartItem => cartItem.id === item.id);
@@ -103,6 +105,7 @@ const SavedForLater = () => {
                     src={item.img} 
                     alt={item.title}
                     fill
+                    sizes="(max-width: 600px) 45vw, 240px"
                     style={{ objectFit: 'contain', padding: '12px' }}
                   />
                 </Box>

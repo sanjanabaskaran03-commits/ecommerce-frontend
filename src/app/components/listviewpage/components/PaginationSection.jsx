@@ -10,12 +10,12 @@ const PaginationSection = () => {
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         justifyContent={{ xs: 'center', md: 'flex-end' }}
-        alignItems="center"
         spacing={2}
         sx={{
           width: "100%",
           mt: 4,
           mb: 6,
+          alignItems: "center",
           gap: { xs: 2, sm: 0 }
         }}
       >

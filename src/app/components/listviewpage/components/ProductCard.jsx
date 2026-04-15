@@ -90,7 +90,7 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         {isGrid ? (
           <Stack spacing={0.5} sx={{ width: '100%' }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ width: '100%', minWidth: 0 }}>
+            <Stack direction="row" justifyContent="space-between" sx={{ width: '100%', minWidth: 0, alignItems: "flex-start" }}>
               <Typography
                 sx={{
                   fontWeight: 500,
@@ -139,7 +139,7 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
             </Stack>
             </Stack>
 
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%' }}>
+            <Stack direction="row" justifyContent="space-between" sx={{ width: '100%', alignItems: "center" }}>
               <Typography
                 sx={{
                   fontWeight: 600,
@@ -161,7 +161,7 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
           </Stack>
         ) : (
           <>
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ width: '100%' }}>
+            <Stack direction="row" justifyContent="space-between" sx={{ width: '100%', alignItems: "flex-start" }}>
               <Typography
                 sx={{
                   fontWeight: 500,
@@ -188,7 +188,7 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
               </Stack>
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+            <Stack direction="row" spacing={1} sx={{ mt: 0.5, alignItems: "center" }}>
               <Typography
                 sx={{
                   fontWeight: 600,
@@ -203,7 +203,7 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
         )}
         
         {!isGrid && (
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+          <Stack direction="row" spacing={1} sx={{ mt: 0.5, alignItems: "center" }}>
             <Rating value={Number(product.rating)} readOnly precision={0.1} size="small" />
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {product.orders} orders

@@ -19,9 +19,8 @@ const Discount = () => {
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           justifyContent="space-between"
-          alignItems="center"
           textAlign={{ xs: 'center', md: 'left' }}
-          sx={{ p: { xs: 3, md: 4 }, gap: 3 }}
+          sx={{ p: { xs: 3, md: 4 }, gap: 3, alignItems: "center" }}
         >
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "600", color: "#fff" }}>

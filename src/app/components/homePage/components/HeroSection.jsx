@@ -136,7 +136,7 @@ const HeroSection = () => {
               >
                 {categories.map((item, index) => (
                   <ListItem
-                    key={index}
+                    key={item}
                     onClick={() => handleCategoryClick(item)}
                     sx={{
                       borderRadius: "6px",
@@ -165,10 +165,12 @@ const HeroSection = () => {
                   >
                     <ListItemText
                       primary={item}
-                      primaryTypographyProps={{
-                        fontSize: "14px",
-                        fontWeight: 500,
-                        color: isDark ? "#e0e0e0" : "#465166",
+                      slotProps={{
+                        primary: {
+                          fontSize: "14px",
+                          fontWeight: 500,
+                          color: isDark ? "#e0e0e0" : "#465166",
+                        },
                       }}
                     />
                   </ListItem>
@@ -191,6 +193,7 @@ const HeroSection = () => {
                 alt="banner"
                 fill
                 priority
+                sizes="(max-width: 900px) 100vw, 670px"
                 style={{
                   objectFit: "cover",
                 }}
@@ -264,8 +267,7 @@ const HeroSection = () => {
                   <Stack
                     direction="row"
                     spacing={1.5}
-                    alignItems="center"
-                    sx={{ mb: 2 }}
+                    sx={{ mb: 2, alignItems: "center" }}
                   >
                     <IconButton
                       sx={{
@@ -277,11 +279,15 @@ const HeroSection = () => {
                       <Person />
                     </IconButton>
 
-                    <Typography
-                      sx={{ fontWeight: 500, fontSize: "16px" }}
-                    >
-                      Hi, user <br /> let's get started
-                    </Typography>
+                    <Box>
+  <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
+    Hi, user
+  </Typography>
+
+  <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
+    {"let's get started"}
+  </Typography>
+</Box>
                   </Stack>
 
                   <Stack spacing={1}>

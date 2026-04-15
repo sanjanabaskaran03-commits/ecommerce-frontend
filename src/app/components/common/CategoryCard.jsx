@@ -4,7 +4,7 @@ import { Box, Typography, Stack, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 const CategoryCard = ({ title, price, img }) => {
   const theme = useTheme();

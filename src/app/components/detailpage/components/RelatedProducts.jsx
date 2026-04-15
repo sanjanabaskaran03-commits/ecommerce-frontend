@@ -67,9 +67,9 @@ const RelatedProducts = () => {
         <Stack 
           direction="row" 
           spacing={2}
-          flexWrap="nowrap"
           sx={{ 
             justifyContent: { md: 'space-between' },
+            flexWrap: "nowrap",
             overflowX: 'auto', 
             pb: { xs: 2, md: 0 }, 
             // FIXED: Scrollbar is completely hidden on desktop/md+
@@ -91,13 +91,13 @@ const RelatedProducts = () => {
             <Stack 
               key={item._id} 
               direction="column" 
-              alignItems="flex-start"
               onClick={() => router.push(`/detail/${item._id}`)}
               sx={{ 
                 flex: { xs: '0 0 auto', md: '1 1 auto' }, 
                 minWidth: { xs: '140px', md: '120px' },
                 maxWidth: { md: '180px' }, 
-                cursor: 'pointer'
+                cursor: 'pointer',
+                alignItems: "flex-start",
               }}
             >
               <Box 

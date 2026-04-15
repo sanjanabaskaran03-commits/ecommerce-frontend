@@ -10,9 +10,15 @@ import LayoutContainer from '@/src/app/components/common/LayoutContainer';
 const Label = () => {
   return (
     <LayoutContainer>
-    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2} mt={5} sx={{display:{xs:'none',md:"flex"}}}>
-        <Stack direction="row" alignItems="center" spacing={1}>
-            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7"  directtion="row" alignItems="center" justifyContent="center">
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      spacing={2}
+      mt={5}
+      sx={{ display: { xs: 'none', md: "flex" }, alignItems: "center" }}
+    >
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7" direction="row" sx={{ alignItems: "center", justifyContent: "center" }}>
             <LockIcon sx={{color:"#979797"}} />
             </Stack>
             <Stack direction="row" flexDirection="column">
@@ -21,8 +27,8 @@ const Label = () => {
             </Stack>
         </Stack>
 
-        <Stack direction="row" alignItems="center" spacing={1}>
-            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7"  directtion="row" alignItems="center" justifyContent="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7" direction="row" sx={{ alignItems: "center", justifyContent: "center" }}>
             <MessageIcon sx={{color:"#979797"}} />
             </Stack>
             <Stack direction="row" flexDirection="column">
@@ -31,8 +37,8 @@ const Label = () => {
             </Stack>
         </Stack>
 
-        <Stack direction="row" alignItems="center" spacing={1}>
-            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7"  directtion="row" alignItems="center" justifyContent="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7" direction="row" sx={{ alignItems: "center", justifyContent: "center" }}>
             <LocalShippingIcon sx={{color:"#979797"}} />
             </Stack>
             <Stack direction="row" flexDirection="column">
@@ -40,8 +46,8 @@ const Label = () => {
             <Typography sx={{fontSize:"14px",color:"#A9ACB0"}}>Have you ever finally just</Typography>
             </Stack>
         </Stack>
-        <Stack direction="row" alignItems="center" spacing={1}>
-            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7"  directtion="row" alignItems="center" justifyContent="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7" direction="row" sx={{ alignItems: "center", justifyContent: "center" }}>
             <HighQualityIcon sx={{color:"#979797"}} />
             </Stack>
             <Stack direction="row" flexDirection="column">

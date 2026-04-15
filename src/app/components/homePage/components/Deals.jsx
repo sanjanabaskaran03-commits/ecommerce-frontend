@@ -7,7 +7,7 @@ import LayoutContainer from "@/src/app/components/common/LayoutContainer";
 import Image from "next/image";
 
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 const Deals = () => {
   const theme = useTheme();

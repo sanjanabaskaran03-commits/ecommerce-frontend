@@ -34,12 +34,14 @@ const SubscribeSection = () => {
               fullWidth
               placeholder="Email"
               size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{ bgcolor: 'background.paper', borderRadius: '6px' }}
             />

@@ -36,13 +36,13 @@ const Navbar = () => {
         }}
       >
         {/* LEFT SIDE: CATEGORIES & LINKS */}
-        <Stack direction="row" spacing={3} alignItems="center">
+        <Stack direction="row" spacing={3} sx={{ alignItems: "center" }}>
           <Stack 
             direction="row" 
             spacing={1} 
-            alignItems="center" 
             sx={{ 
               cursor: 'pointer',
+              alignItems: "center",
               '&:hover': { opacity: 0.8 }
             }}
           >
@@ -57,7 +57,7 @@ const Navbar = () => {
           <NavLink label="Projects" />
           <NavLink label="Menu item" />
           
-          <Stack direction="row" alignItems="center" sx={{ cursor: 'pointer' }}>
+          <Stack direction="row" sx={{ cursor: 'pointer', alignItems: "center" }}>
             <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary' }}>
               Help
             </Typography>
@@ -66,17 +66,17 @@ const Navbar = () => {
         </Stack>
 
         {/* RIGHT SIDE: SETTINGS & SHIPPING */}
-        <Stack direction="row" spacing={4} alignItems="center">
+        <Stack direction="row" spacing={4} sx={{ alignItems: "center" }}>
           <NavDropdown label="English, USD" />
           
           <Stack 
             direction="row" 
             spacing={1} 
-            alignItems="center" 
             sx={{ 
               cursor: 'pointer',
               padding: '4px 8px',
               borderRadius: '4px',
+              alignItems: "center",
               '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' }
             }}
           >
@@ -118,9 +118,9 @@ const NavLink = ({ label }) => (
 const NavDropdown = ({ label }) => (
   <Stack 
     direction="row" 
-    alignItems="center" 
     sx={{ 
       cursor: 'pointer',
+      alignItems: "center",
       '&:hover': { opacity: 0.8 }
     }}
   >
