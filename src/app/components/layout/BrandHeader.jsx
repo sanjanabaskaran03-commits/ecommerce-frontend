@@ -19,6 +19,7 @@ import {
 const BrandHeader = () => {
   const theme = useTheme();
   const [mounted, setMounted] = useState(false);
+   const [user, setUser] = useState(null);
   const themeMode = useContext(ColorModeContext);
   const { cartItems } = useCart();
   const { wishlistItems } = useWishlist();
@@ -30,6 +31,7 @@ const BrandHeader = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+ 
   const isDark = theme.palette.mode === 'dark';
 
   // --- MongoDB Data States ---
@@ -112,13 +114,38 @@ const BrandHeader = () => {
 
   const handleProfileOpen = (event) => setProfileAnchorEl(event.currentTarget);
   const handleProfileClose = () => setProfileAnchorEl(null);
-  const handleProfileAction = (path) => {
-    handleProfileClose();
-    if (path) router.push(path);
-  };
+  const handleLogout = () => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  })
+    .then(() => {
+      handleProfileClose();
+      router.push("/auth/login"); // redirect after logout
+    })
+    .catch(() => {
+      console.error("Logout failed");
+    });
+};
 
-  if (!mounted) return <Box sx={{ height: '70px', bgcolor: 'background.paper' }} />;
-
+  useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+    credentials: "include",
+  })
+    .then((res) => {
+      if (!res.ok) return null;
+      return res.json();
+    })
+    .then((data) => {
+      if (data && data.user) {
+        setUser(data.user);
+      }
+    })
+    .catch(() => {
+      setUser(null);
+    });
+}, []);
+ if (!mounted) return <Box sx={{ height: '70px', bgcolor: 'background.paper' }} />;
   return (
     <AppBar
       position="sticky" color="inherit" elevation={0}
@@ -239,8 +266,8 @@ const BrandHeader = () => {
         PaperProps={{ sx: { width: '220px', mt: 1, borderRadius: '8px' } }}
       >
         <MenuItem disabled sx={{ opacity: '1 !important', color: 'text.primary', fontWeight: 600 }}>
-          Account holder: Guest
-        </MenuItem>
+  Account holder: {user ? user.name : "Guest"}
+</MenuItem>
         <Divider />
         <MenuItem onClick={() => handleProfileAction('/profile')}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
@@ -248,7 +275,7 @@ const BrandHeader = () => {
             <Typography variant="body2">My Profile</Typography>
           </Stack>
         </MenuItem>
-        <MenuItem onClick={() => handleProfileAction('/logout')}>
+        <MenuItem onClick={handleLogout}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
             <Logout fontSize="small" sx={{ color: 'error.main' }} />
             <Typography variant="body2" sx={{ color: 'error.main' }}>Logout</Typography>

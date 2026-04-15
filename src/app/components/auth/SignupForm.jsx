@@ -15,19 +15,23 @@ import { useRouter } from "next/navigation";
 export default function SignupForm() {
   const router = useRouter();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+ const [form, setForm] = useState({
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: ""
+});
 
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+ const handleChange = (e) => {
+  setForm({
+    ...form,
+    [e.target.name]: e.target.value
+  });
+};
 
   const handleSignup = async () => {
     if (form.password !== form.confirmPassword) {
@@ -43,6 +47,7 @@ export default function SignupForm() {
         },
         credentials: "include",
         body: JSON.stringify({
+          name:form.name,
           email: form.email,
           password: form.password,
         }),
@@ -64,6 +69,12 @@ export default function SignupForm() {
 
   return (
     <Stack spacing={2}>
+      <TextField
+  label="Name"
+  name="name"
+  fullWidth
+  onChange={handleChange}
+/>
       <TextField
         label="Email"
         name="email"

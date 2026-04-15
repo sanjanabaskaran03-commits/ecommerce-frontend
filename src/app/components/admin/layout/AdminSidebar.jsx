@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Typography, List, ListItemButton, ListItemText } from "@mui/material";
+import { Box, Typography, Stack,Button,List, ListItemButton, ListItemText } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 export default function AdminSidebar() {
@@ -14,25 +14,32 @@ export default function AdminSidebar() {
 
   return (
     <Box
-      sx={{
-        width: 220,
-        bgcolor: "background.paper",
-        borderRight: "1px solid",
-        borderColor: "divider",
-        p: 2,
-      }}
-    >
-      <Typography variant="h6" fontWeight={700} mb={2}>
-        Admin Panel
-      </Typography>
+  sx={{
+    width: 240,
+    bgcolor: "background.paper",
+    borderRight: "1px solid",
+    borderColor: "divider",
+    p: 2,
+  }}
+>
+  <Typography fontWeight={700} mb={2}>
+    Admin Panel
+  </Typography>
 
-      <List>
-        {menu.map((item) => (
-          <ListItemButton key={item.path} onClick={() => router.push(item.path)}>
-            <ListItemText primary={item.label} />
-          </ListItemButton>
-        ))}
-      </List>
-    </Box>
+  <Stack spacing={1}>
+    {["Dashboard", "Products", "Add Product"].map((item) => (
+      <Button
+        key={item}
+        sx={{
+          justifyContent: "flex-start",
+          textTransform: "none",
+          borderRadius: "8px",
+        }}
+      >
+        {item}
+      </Button>
+    ))}
+  </Stack>
+</Box>
   );
 }
