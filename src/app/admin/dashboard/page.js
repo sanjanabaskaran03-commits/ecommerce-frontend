@@ -1,137 +1,88 @@
 "use client";
 
-import { Box, Typography, Grid, Paper, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
+import { useEffect, useState } from "react";
 
-export default function AdminDashboard() {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
+import StatsCard from "@/src/app/components/admin/dashboard/StatsCard";
+import SalesChart from "@/src/app/components/admin/dashboard/SalesChart";
+import RecentOrders from "@/src/app/components/admin/dashboard/RecentOrders";
 
-  const stats = [
-    { label: "Products", value: 120 },
-    { label: "Orders", value: 45 },
-    { label: "Revenue", value: "$1200" },
-  ];
+export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    inactive: 0,
+  });
 
-  const orders = [
-    { name: "Sanjana", total: "$120", status: "Delivered" },
-    { name: "Arun", total: "$80", status: "Pending" },
-    { name: "Kiran", total: "$200", status: "Cancelled" },
-  ];
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
 
-  const getStatusColor = (status) => {
-    if (status === "Delivered") return "success.main";
-    if (status === "Pending") return "warning.main";
-    return "error.main";
-  };
+        console.log("PRODUCTS FROM API:", data); // 🔍 debug
+
+        const total = data.length;
+
+        // ✅ STOCK is the real source of truth in your app
+        const active = data.filter((p) => Number(p.stock) > 0).length;
+
+        const inactive = data.filter((p) => Number(p.stock) === 0).length;
+
+        setStats({
+          total,
+          active,
+          inactive,
+        });
+      } catch (err) {
+        console.log("Dashboard fetch error:", err);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   return (
-    <Box sx={{ p: 3, bgcolor: "background.default", minHeight: "100vh" }}>
-      
-      <Typography variant="h5" fontWeight={600} mb={3}>
-        Admin Dashboard
-      </Typography>
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3, md: 4 },
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        bgcolor: "background.default",
+      }}
+    >
+      {/* STATS ROW */}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
+        <Box sx={{ flex: "1 1 250px" }}>
+          <StatsCard title="Total Products" value={stats.total} />
+        </Box>
 
-      {/* STATS */}
-      <Grid container spacing={2}>
-        {stats.map((item, index) => (
-          <Grid item xs={12} sm={4} key={index}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: "16px",
-                bgcolor: "background.paper",
-                border: `1px solid ${theme.palette.divider}`,
-                textAlign: "center",
-              }}
-            >
-              <Typography variant="body2" color="text.secondary">
-                {item.label}
-              </Typography>
-              <Typography variant="h5" fontWeight={700}>
-                {item.value}
-              </Typography>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+        <Box sx={{ flex: "1 1 250px" }}>
+          <StatsCard title="Active Products" value={stats.active} />
+        </Box>
 
-      {/* MAIN CONTENT */}
-      <Grid container spacing={2} mt={1}>
-        
-        {/* SALES CHART (Placeholder) */}
-        <Grid item xs={12} md={6}>
-          <Paper
-            sx={{
-              p: 3,
-              borderRadius: "16px",
-              bgcolor: "background.paper",
-              border: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            <Typography fontWeight={600} mb={2}>
-              Sales Overview
-            </Typography>
+        <Box sx={{ flex: "1 1 250px" }}>
+          <StatsCard title="Inactive Products" value={stats.inactive} />
+        </Box>
+      </Box>
 
-            <Box
-              sx={{
-                height: 200,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "text.secondary",
-              }}
-            >
-              Chart goes here 📊
-            </Box>
-          </Paper>
-        </Grid>
+      {/* CHART */}
+      <Box>
+        <SalesChart />
+      </Box>
 
-        {/* RECENT ORDERS */}
-        <Grid item xs={12} md={6}>
-          <Paper
-            sx={{
-              p: 3,
-              borderRadius: "16px",
-              bgcolor: "background.paper",
-              border: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            <Typography fontWeight={600} mb={2}>
-              Recent Orders
-            </Typography>
-
-            {orders.map((order, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  py: 1,
-                  borderBottom:
-                    index !== orders.length - 1
-                      ? `1px solid ${theme.palette.divider}`
-                      : "none",
-                }}
-              >
-                <Typography>{order.name}</Typography>
-                <Typography>{order.total}</Typography>
-                <Typography
-                  sx={{
-                    px: 1.5,
-                    borderRadius: "12px",
-                    fontSize: "12px",
-                    bgcolor: getStatusColor(order.status),
-                    color: "#fff",
-                  }}
-                >
-                  {order.status}
-                </Typography>
-              </Box>
-            ))}
-          </Paper>
-        </Grid>
-      </Grid>
+      {/* RECENT ORDERS */}
+      <Box>
+        <RecentOrders />
+      </Box>
     </Box>
   );
 }

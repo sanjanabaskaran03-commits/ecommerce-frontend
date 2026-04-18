@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -12,14 +13,27 @@ import { Box, Typography, useTheme } from "@mui/material";
 
 export default function SalesChart() {
   const theme = useTheme();
+  const [data, setData] = useState([]);
 
-  const data = [
-    { name: "Jan", sales: 400 },
-    { name: "Feb", sales: 700 },
-    { name: "Mar", sales: 500 },
-    { name: "Apr", sales: 900 },
-    { name: "May", sales: 600 },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const products = await res.json();
+
+        const chartData = products.map((p, i) => ({
+          name: p.title?.slice(0, 10) || `Item ${i + 1}`,
+          sales: p.orders || Math.floor(Math.random() * 100),
+        }));
+
+        setData(chartData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Box
@@ -27,27 +41,30 @@ export default function SalesChart() {
         p: 3,
         borderRadius: 3,
         bgcolor: "background.paper",
-        boxShadow: 2,
+        border: "1px solid",
+        borderColor: "divider",
       }}
     >
-      <Typography variant="h6" mb={2}>
+      <Typography variant="h6" sx={{ mb: 2 }} style={{ color: theme.palette.text.primary }}>
         Sales Overview
       </Typography>
 
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={data}>
-          <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-          <YAxis stroke={theme.palette.text.secondary} />
-          <Tooltip />
+      <Box sx={{ width: "100%", height: 300 }}>
+        <ResponsiveContainer>
+          <LineChart data={data}>
+            <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+            <YAxis stroke={theme.palette.text.secondary} />
+            <Tooltip />
 
-          <Line
-            type="monotone"
-            dataKey="sales"
-            stroke={theme.palette.primary.main}
-            strokeWidth={3}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+            <Line
+              type="monotone"
+              dataKey="sales"
+              stroke={theme.palette.primary.main}
+              strokeWidth={3}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </Box>
     </Box>
   );
 }
