@@ -27,6 +27,8 @@ export default function ProductForm({ isEdit, productId }) {
     discountPercent: "",
     imageName: "",
     stock: "",
+    dealStart: "",   
+  dealEnd: "", 
     specifications: {
       Material: "",
       Type: "",
@@ -91,10 +93,7 @@ export default function ProductForm({ isEdit, productId }) {
 
     setForm((prev) => ({
       ...prev,
-      [name]:
-        name === "stock" || name === "price"
-          ? value === "" ? "" : Number(value)
-          : value
+      [name]: value // ✅ always keep as string
     }));
   };
 
@@ -149,6 +148,11 @@ export default function ProductForm({ isEdit, productId }) {
   const handleSubmit = () => {
     const payload = {
       ...form,
+      price: Number(form.price),
+      stock: Number(form.stock),
+      discountPercent: Number(form.discountPercent),
+      dealStart: form.dealStart,
+      dealEnd: form.dealEnd,
       image: imageBase64
     };
 
@@ -194,7 +198,7 @@ export default function ProductForm({ isEdit, productId }) {
 
       <TextField name="title" label="Title" value={form.title} onChange={handleChange} />
       <TextField name="price" label="Price" type="number" value={form.price} onChange={handleChange} />
-      <TextField name="stock" label="Stock Quantity" type="number" value={form.stock} onChange={handleChange} />
+      <TextField name="stock" label="Stock Quantity" type="text" value={form.stock} onChange={handleChange} />
 
       <FormControl fullWidth>
         <InputLabel id="category-label">Category</InputLabel>
@@ -213,6 +217,23 @@ export default function ProductForm({ isEdit, productId }) {
 
       <TextField name="description" label="Description" multiline rows={3} value={form.description} onChange={handleChange} />
       <TextField name="discountPercent" label="Discount %" type="number" value={form.discountPercent} onChange={handleChange} />
+      <TextField
+  name="dealStart"
+  label="Deal Start"
+  type="datetime-local"
+  value={form.dealStart}
+  onChange={handleChange}
+  InputLabelProps={{ shrink: true }}
+/>
+
+<TextField
+  name="dealEnd"
+  label="Deal End"
+  type="datetime-local"
+  value={form.dealEnd}
+  onChange={handleChange}
+  InputLabelProps={{ shrink: true }}
+/>
 
       <Stack direction="row" spacing={2}>
         <TextField value={form.imageName} fullWidth InputProps={{ readOnly: true }} />

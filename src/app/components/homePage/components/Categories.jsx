@@ -1,5 +1,7 @@
 "use client";
+
 import { Box } from "@mui/material";
+import Image from "next/image";
 import LayoutContainer from "@/src/app/components/common/LayoutContainer";
 import CategorySection from "@/src/app/components/common/CategorySection";
 import ElectronicsBanner from "@/public/images/homepage/categories/electronics.png";
@@ -12,31 +14,33 @@ const Categories = () => {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const loadSections = async () => {
       try {
-        // We fetch all products once to save on network requests
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/products`
+        );
         const allProducts = await res.json();
+
+        console.log("All Products:", allProducts); // ✅ Debug
 
         if (!isMounted || !Array.isArray(allProducts)) return;
 
-        // Filter for Home & Outdoor section
-        const home = allProducts.filter(item => 
-          item.sectionTags && item.sectionTags.includes("home-outdoor")
+        // ✅ FILTER MATCHING YOUR ADMIN TAGS
+        const home = allProducts.filter(
+          (item) =>
+            item.sectionTags &&
+            item.sectionTags.includes("home")
         );
 
-        // Filter for Electronics & Gadgets section
-        const electronics = allProducts.filter(item => 
-          item.sectionTags && (
-            item.sectionTags.includes("consumer-electronics") || 
-            item.sectionTags.includes("gadgets")
-          )
+        const electronics = allProducts.filter(
+          (item) =>
+            item.sectionTags &&
+            item.sectionTags.includes("electronics")
         );
 
         setHomeItems(home);
         setElectronicsItems(electronics);
-
       } catch (err) {
         console.error("Fetch error:", err);
         if (isMounted) {
@@ -47,7 +51,7 @@ const Categories = () => {
     };
 
     loadSections();
-    
+
     return () => {
       isMounted = false;
     };
@@ -56,24 +60,26 @@ const Categories = () => {
   return (
     <LayoutContainer>
       <Box sx={{ py: 2 }}>
-        <CategorySection 
-          title="Home and outdoor" 
-          bannerImg={ElectronicsBanner} 
+        {/* HOME SECTION */}
+        <CategorySection
+          title="Home and Outdoor"
+          bannerImg={Homedecor}
           items={homeItems.map((item) => ({
             title: item.title,
             price: item.price,
-            img: item.image,
-          }))} 
+            img: item.image, // ✅ FIXED FIELD
+          }))}
         />
 
-        <CategorySection 
-          title="Consumer electronics and gadgets" 
-          bannerImg={Homedecor}
+        {/* ELECTRONICS SECTION */}
+        <CategorySection
+          title="Electronics and Gadgets"
+          bannerImg={ElectronicsBanner}
           items={electronicsItems.map((item) => ({
             title: item.title,
             price: item.price,
-            img: item.image,
-          }))} 
+            img: item.image, // ✅ FIXED FIELD
+          }))}
         />
       </Box>
     </LayoutContainer>
@@ -81,14 +87,3 @@ const Categories = () => {
 };
 
 export default Categories;
-
-
-
-
-
-
-
-
-
-
-

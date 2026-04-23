@@ -15,7 +15,7 @@ import RegionalSuppliers from "./components/RegionalSuppliers";
 const HomePage = () => {
 
   return (
-    <>
+    <Box sx={{ bgcolor: "background.default", minHeight: "100vh", py: 2 }}>
       <HeroSection />
       <Deals />
       <Categories />
@@ -23,7 +23,7 @@ const HomePage = () => {
       <RecommendedItems />
       <Services />
       <RegionalSuppliers />
-    </>
+    </Box>
   );
 };
 
