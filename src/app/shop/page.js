@@ -27,13 +27,13 @@ const ListContent = () => {
 
   const category = searchParams.get('category');
 
-  const handleFilterToggle = (filterName) => {
-    setActiveFilters((prev) =>
-      prev.includes(filterName)
-        ? prev.filter((item) => item !== filterName)
-        : [...prev, filterName]
-    );
-  };
+  const handleFilterToggle = (value) => {
+  setActiveFilters(prev =>
+    prev.includes(value)
+      ? prev.filter(v => v !== value)
+      : [...prev, value]
+  );
+};
 
   const clearAllFilters = () => setActiveFilters([]);
 
@@ -124,7 +124,6 @@ const ListContent = () => {
                 viewMode={viewMode}
               />
             </Box>
-            <PaginationSection />
           </Box>
         </Box>
       </LayoutContainer>

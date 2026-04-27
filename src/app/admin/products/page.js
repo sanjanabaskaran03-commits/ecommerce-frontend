@@ -30,9 +30,9 @@ export default function ProductsPage() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("http://localhost:5000/api/products?mode=admin")
       .then((res) => res.json())
-      .then((data) => setProducts(data || []))
+      .then((data) => setProducts(data.data || []))
       .finally(() => setLoading(false))
       .catch((err) => console.error(err));
   }, []);

@@ -80,8 +80,7 @@ const HeroSection = () => {
   ];
 
   const handleCategoryClick = (category) => {
-    const urlFriendlyCategory = category.toLowerCase().replace(/\s+/g, '-');
-    router.push(`/shop?category=${urlFriendlyCategory}`);
+    router.push(`/shop?category=${encodeURIComponent(category)}`);
   };
 
   return (

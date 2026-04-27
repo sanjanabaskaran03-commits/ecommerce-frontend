@@ -9,6 +9,13 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
+import {
+  DEFAULT_CATEGORIES,
+  extractFeatures,
+  getDerivedBrand,
+  normalizeCategoryParam,
+  unwrapProductsResponse,
+} from "@/src/app/utils/productFilters";
 
 const FilterSection = ({ title, children, onSeeAll, hasMore = false, seeAllText = "See all" }) => (
   <Accordion defaultExpanded elevation={0} sx={{ '&:before': { display: 'none' }, bgcolor: 'transparent' }}>
@@ -45,28 +52,53 @@ const FilterSidebar = ({
   const [draftPrice, setDraftPrice] = useState(priceRange);
   const [allCategories, setAllCategories] = useState([]);
   const [dynamicBrands, setDynamicBrands] = useState([]);
+  const [dynamicFeatures, setDynamicFeatures] = useState([]);
 
   const searchParams = useSearchParams();
   const router = useRouter(); 
   
-  const currentCategory = searchParams.get('category')?.replace(/-/g, ' ');
+  const currentCategory = normalizeCategoryParam(searchParams.get('category'));
   const isChecked = (value) => activeFilters.includes(value);
 
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const res = await fetch('/api/products');
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          const cats = [...new Set(data.map(item => item.category))];
-          setAllCategories(cats);
+        const API = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${API}/api/products`);
+        const json = await res.json();
+        const products = unwrapProductsResponse(json);
 
-          const relevant = currentCategory 
-            ? data.filter(p => p.category.toLowerCase() === currentCategory.toLowerCase())
-            : data;
-          const brands = [...new Set(relevant.map(item => item.title.split(' ')[0]))];
-          setDynamicBrands(brands);
-        }
+        const productCategories = [
+          ...new Set(products.map((item) => item?.category).filter(Boolean)),
+        ];
+        const extraCategories = productCategories
+          .filter(
+            (c) =>
+              !DEFAULT_CATEGORIES.some(
+                (d) => String(d).toLowerCase() === String(c).toLowerCase()
+              )
+          )
+          .sort((a, b) => String(a).localeCompare(String(b)));
+        const categories = [...DEFAULT_CATEGORIES, ...extraCategories];
+        setAllCategories(categories);
+
+        const relevant = currentCategory
+          ? products.filter(
+              (p) =>
+                String(p?.category || "").toLowerCase() ===
+                currentCategory.toLowerCase()
+            )
+          : products;
+
+        const brands = [
+          ...new Set(relevant.map((item) => getDerivedBrand(item)).filter(Boolean)),
+        ].sort((a, b) => String(a).localeCompare(String(b)));
+        setDynamicBrands(brands);
+
+        const features = [
+          ...new Set(relevant.flatMap((item) => extractFeatures(item)).filter(Boolean)),
+        ].sort((a, b) => String(a).localeCompare(String(b)));
+        setDynamicFeatures(features);
       } catch (error) {
         console.error("Filter fetch error:", error);
       }
@@ -119,7 +151,7 @@ const FilterSidebar = ({
     return ['Quality Material', 'New Arrival', 'Best Seller', 'Metallic', 'Plastic cover'];
   };
 
-  const features = getFeatures();
+  const features = dynamicFeatures.length ? dynamicFeatures : getFeatures();
 
   const handleApplyPrice = () => {
     onPriceChange?.(draftPrice);

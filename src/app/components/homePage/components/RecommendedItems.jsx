@@ -13,21 +13,25 @@ const RecommendedItems = () => {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/products`
         );
-        const data = await res.json();
+        const json = await res.json();
+        const products = Array.isArray(json)
+          ? json
+          : Array.isArray(json?.data)
+            ? json.data
+            : Array.isArray(json?.products)
+              ? json.products
+              : [];
 
-        if (Array.isArray(data)) {
-          // 🔥 RANDOMIZE PRODUCTS
-          const shuffled = [...data].sort(() => 0.5 - Math.random());
+        if (Array.isArray(products)) {
+          const shuffled = [...products].sort(() => 0.5 - Math.random());
 
-          // 🔥 PICK TOP 10 (you can change number)
           const selected = shuffled.slice(0, 10);
 
-          // 🔥 MAP DATA
           const mapped = selected.map((product) => ({
             id: product._id,
             title: product.title,
             price: product.price,
-            img: product.image, // ✅ correct field
+            img: product.image,
           }));
 
           setItems(mapped);

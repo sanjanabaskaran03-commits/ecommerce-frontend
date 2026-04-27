@@ -17,10 +17,7 @@ export const CartProvider = ({ children }) => {
     }
 
     fetch(`${API_URL}/api/cart`)
-      .then(res => {
-        if (!res.ok) throw new Error("Network response was not ok");
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         setCartItems(Array.isArray(data) ? data : []);
         setLoading(false);
@@ -30,6 +27,58 @@ export const CartProvider = ({ children }) => {
         setLoading(false);
       });
   }, []);
+
+  // ✅ CHECK IF ITEM EXISTS
+  const isInCart = (productId) => {
+    return cartItems.some(
+      (item) =>
+        item.id === productId ||
+        item._id === productId ||
+        item.productId === productId
+    );
+  };
+
+  // ✅ TOGGLE CART (ADD / REMOVE)
+  const toggleCart = async (product) => {
+    const productId = product.id || product._id;
+
+    const exists = isInCart(productId);
+
+    // 🔴 REMOVE FROM CART
+    if (exists) {
+      setCartItems((prev) =>
+        prev.filter(
+          (item) =>
+            item.id !== productId &&
+            item._id !== productId &&
+            item.productId !== productId
+        )
+      );
+
+      try {
+        await fetch(`${API_URL}/api/cart?id=${productId}`, {
+          method: 'DELETE'
+        });
+      } catch (error) {
+        console.error("Remove failed:", error);
+      }
+
+      return;
+    }
+
+    // 🟢 ADD TO CART
+    setCartItems((prev) => [...prev, { ...product, qty: 1 }]);
+
+    try {
+      await fetch(`${API_URL}/api/cart`, {
+        method: 'POST',
+        body: JSON.stringify({ productId, action: 'add' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error("Add failed:", error);
+    }
+  };
 
   const updateQuantity = async (productId, newQty) => {
     setCartItems((prevItems) =>
@@ -51,55 +100,13 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (product) => {
-    setCartItems((prev) => {
-      const existingItem = prev.find(
-        (item) => item.id === product.id || item._id === product.id
-      );
-
-      if (existingItem) {
-        return prev.map((item) =>
-          (item.id === product.id || item._id === product.id)
-            ? { ...item, qty: item.qty + 1 }
-            : item
-        );
-      }
-
-      return [...prev, { ...product, qty: 1 }];
-    });
-
-    try {
-      await fetch(`${API_URL}/api/cart`, {
-        method: 'POST',
-        body: JSON.stringify({ productId: product.id, action: 'add' }),
-        headers: { 'Content-Type': 'application/json' }
-      });
-    } catch (error) {
-      console.error("Failed to sync cart:", error);
-    }
-  };
-
-  const removeFromCart = async (id) => {
-    setCartItems((prev) =>
-      prev.filter(item => (item.id !== id && item._id !== id))
-    );
-
-    try {
-      await fetch(`${API_URL}/api/cart?id=${id}`, {
-        method: 'DELETE'
-      });
-    } catch (error) {
-      console.error("Delete failed:", error);
-    }
-  };
-
   return (
     <CartContext.Provider value={{
       cartItems,
-      addToCart,
-      removeFromCart,
+      toggleCart,
       updateQuantity,
-      loading
+      loading,
+      isInCart
     }}>
       {children}
     </CartContext.Provider>

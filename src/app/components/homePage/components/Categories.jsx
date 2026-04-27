@@ -20,13 +20,17 @@ const Categories = () => {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/products`
         );
-        const allProducts = await res.json();
-
-        console.log("All Products:", allProducts); // ✅ Debug
+        const json = await res.json();
+        const allProducts = Array.isArray(json)
+          ? json
+          : Array.isArray(json?.data)
+            ? json.data
+            : Array.isArray(json?.products)
+              ? json.products
+              : [];
 
         if (!isMounted || !Array.isArray(allProducts)) return;
 
-        // ✅ FILTER MATCHING YOUR ADMIN TAGS
         const home = allProducts.filter(
           (item) =>
             item.sectionTags &&
@@ -60,14 +64,13 @@ const Categories = () => {
   return (
     <LayoutContainer>
       <Box sx={{ py: 2 }}>
-        {/* HOME SECTION */}
         <CategorySection
           title="Home and Outdoor"
           bannerImg={Homedecor}
           items={homeItems.map((item) => ({
             title: item.title,
             price: item.price,
-            img: item.image, // ✅ FIXED FIELD
+            img: item.image, 
           }))}
         />
 
@@ -78,7 +81,7 @@ const Categories = () => {
           items={electronicsItems.map((item) => ({
             title: item.title,
             price: item.price,
-            img: item.image, // ✅ FIXED FIELD
+            img: item.image,
           }))}
         />
       </Box>

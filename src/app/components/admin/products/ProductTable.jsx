@@ -19,7 +19,7 @@ export default function ProductTable() {
 
   // FETCH PRODUCTS
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("http://localhost:5000/api/products?mode=admin")
       .then((res) => res.json())
       .then((data) => setProducts(data || []))
       .catch((err) => console.log(err));

@@ -47,8 +47,14 @@ const BrandHeader = () => {
     const fetchHeaderData = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
-        const data = await res.json();
-        const productsArray = Array.isArray(data) ? data : (data.products || []);
+        const json = await res.json();
+        const productsArray = Array.isArray(json)
+          ? json
+          : Array.isArray(json?.data)
+            ? json.data
+            : Array.isArray(json?.products)
+              ? json.products
+              : [];
         setDbProducts(productsArray);
         const uniqueCats = [...new Set(productsArray.map(item => item.category))];
         setProductCategories(uniqueCats);
@@ -60,7 +66,12 @@ const BrandHeader = () => {
     if (mounted) fetchHeaderData();
   }, [mounted]);
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
+  const cartCount = Array.isArray(cartItems)
+  ? cartItems.reduce((acc, item) => {
+      const qty = parseInt(item?.qty, 10);
+      return acc + (isNaN(qty) ? 0 : qty);
+    }, 0)
+  : 0;
   const wishlistCount = wishlistItems.length;
 
   const categoryCards = useMemo(() => {

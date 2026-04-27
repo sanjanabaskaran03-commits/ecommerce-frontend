@@ -47,12 +47,19 @@ const Deals = () => {
     const loadDeals = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
-        const data = await res.json();
+        const json = await res.json();
+        const products = Array.isArray(json)
+          ? json
+          : Array.isArray(json?.data)
+            ? json.data
+            : Array.isArray(json?.products)
+              ? json.products
+              : [];
         
         if (isMounted) {
-          const filteredDeals = Array.isArray(data) 
-            ? data.filter(item => item.sectionTags && item.sectionTags.includes("deals"))
-            : [];
+          const filteredDeals = products.filter(
+            (item) => item?.sectionTags && item.sectionTags.includes("deals")
+          );
             
           setDeals(filteredDeals);
         }

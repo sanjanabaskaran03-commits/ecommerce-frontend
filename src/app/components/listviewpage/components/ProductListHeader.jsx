@@ -13,6 +13,8 @@ const ProductListHeader = ({
   category,
   activeFilters,
   onFilterToggle,
+  priceRange,
+  onPriceChange,
   verifiedOnly,
   onVerifiedChange,
   sortOption,
@@ -39,7 +41,7 @@ const formatCategory = (str) => {
       mb: 2,
     }}>
       <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{color:'text.primary'}}>
           Items in <b>{formatCategory(category)}</b>
         </Typography>
 
@@ -52,7 +54,11 @@ const formatCategory = (str) => {
                 onChange={(e) => onVerifiedChange?.(e.target.checked)}
               />
             }
-            label="Verified only"
+            label={
+    <Typography sx={{ color: 'text.primary'}}>
+      Verified only
+    </Typography>
+  }
           />
           <Select
             value={sortOption}
@@ -159,6 +165,8 @@ const formatCategory = (str) => {
           activeFilters={activeFilters} 
           onFilterToggle={onFilterToggle} 
           isMobileDrawer={true} 
+          priceRange={priceRange}
+          onPriceChange={onPriceChange}
         />
         
         <Box sx={{ mt: 3 }}>
