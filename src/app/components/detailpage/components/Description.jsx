@@ -148,8 +148,7 @@ const Description = () => {
       <Stack
         direction="row"
         spacing={2}
-        justifyContent="space-between"
-        sx={{ mt: 3, mb: 5, alignItems: "stretch" }}
+        sx={{ mt: 3, mb: 5, alignItems: "stretch", justifyContent: "space-between" }}
       >
         {/* Main Content (Left) */}
         <Stack sx={{ flex: 3 }}>

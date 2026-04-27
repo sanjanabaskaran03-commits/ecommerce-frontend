@@ -4,15 +4,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(() => Boolean(API_URL));
 
   useEffect(() => {
     if (!API_URL) {
       console.error("NEXT_PUBLIC_API_URL is not defined");
-      setLoading(false);
       return;
     }
 
@@ -26,7 +24,7 @@ export const CartProvider = ({ children }) => {
         console.error("Cart fetch failed:", err);
         setLoading(false);
       });
-  }, []);
+  }, [API_URL]);
 
   // ✅ CHECK IF ITEM EXISTS
   const isInCart = (productId) => {

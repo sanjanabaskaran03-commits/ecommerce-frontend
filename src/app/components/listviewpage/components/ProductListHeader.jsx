@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  Box, Typography, Stack, Select, MenuItem, Checkbox, 
-  FormControlLabel, IconButton, Button, Drawer, Divider 
+import {
+  Box, Typography, Stack, Select, MenuItem, Checkbox,
+  FormControlLabel, IconButton, Button, Drawer, Divider
 } from '@mui/material';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloseIcon from '@mui/icons-material/Close';
-import FilterSidebar from './FilterSidebar'; 
+import FilterSidebar from './FilterSidebar';
 
 const ProductListHeader = ({
   category,
@@ -23,7 +23,7 @@ const ProductListHeader = ({
   onViewModeChange,
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-const formatCategory = (str) => {
+  const formatCategory = (str) => {
     if (!str) return "All Products";
     return str.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
@@ -32,16 +32,16 @@ const formatCategory = (str) => {
   };
 
   return (
-    <Box sx={{ 
-      p: { xs: 1, md: 2 }, 
-      bgcolor: 'background.paper', 
+    <Box sx={{
+      p: { xs: 1, md: 2 },
+      bgcolor: 'background.paper',
       border: '1px solid',
-      borderColor: 'divider', 
+      borderColor: 'divider',
       borderRadius: '6px',
       mb: 2,
     }}>
       <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="body1" sx={{color:'text.primary'}}>
+        <Typography variant="body1" sx={{ color: 'text.primary' }}>
           Items in <b>{formatCategory(category)}</b>
         </Typography>
 
@@ -55,10 +55,10 @@ const formatCategory = (str) => {
               />
             }
             label={
-    <Typography sx={{ color: 'text.primary'}}>
-      Verified only
-    </Typography>
-  }
+              <Typography sx={{ color: 'text.primary' }}>
+                Verified only
+              </Typography>
+            }
           />
           <Select
             value={sortOption}
@@ -95,14 +95,14 @@ const formatCategory = (str) => {
         </Stack>
       </Box>
 
-      <Stack 
-        direction="row" 
-        
-        sx={{ display: { xs: 'flex', md: 'none' } ,justifyContent:"space-between",alignItems:"center" }}
+      <Stack
+        direction="row"
+
+        sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: "space-between", alignItems: "center" }}
       >
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          <Button 
-            variant="outlined" 
+          <Button
+            variant="outlined"
             onClick={handleDrawerToggle(true)}
             endIcon={<FilterListIcon />}
             sx={{ textTransform: 'none', color: 'text.primary', borderColor: 'divider', fontWeight: 400, height: '32px' }}
@@ -119,7 +119,7 @@ const formatCategory = (str) => {
             <MenuItem value="Newest">Newest items</MenuItem>
           </Select>
         </Stack>
-        
+
         <Stack direction="row" sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '4px' }}>
           <IconButton
             size="small"
@@ -153,26 +153,26 @@ const formatCategory = (str) => {
           sx: { width: '280px', p: 2 }
         }}
       >
-        <Stack direction="row" justifyContent="space-between" sx={{ mb: 1, alignItems: "center" }}>
+        <Stack direction="row" sx={{ mb: 1, alignItems: "center", justifyContent: "space-between" }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>Filters</Typography>
           <IconButton onClick={handleDrawerToggle(false)}>
             <CloseIcon />
           </IconButton>
         </Stack>
         <Divider sx={{ mb: 1 }} />
-        
-        <FilterSidebar 
-          activeFilters={activeFilters} 
-          onFilterToggle={onFilterToggle} 
-          isMobileDrawer={true} 
+
+        <FilterSidebar
+          activeFilters={activeFilters}
+          onFilterToggle={onFilterToggle}
+          isMobileDrawer={true}
           priceRange={priceRange}
           onPriceChange={onPriceChange}
         />
-        
+
         <Box sx={{ mt: 3 }}>
-          <Button 
-            variant="contained" 
-            fullWidth 
+          <Button
+            variant="contained"
+            fullWidth
             onClick={handleDrawerToggle(false)}
             sx={{ textTransform: 'none' }}
           >

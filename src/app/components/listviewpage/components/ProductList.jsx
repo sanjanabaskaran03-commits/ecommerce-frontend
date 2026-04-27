@@ -23,8 +23,9 @@ const ProductList = ({
   const searchParams = useSearchParams();
 
   const categoryParam = searchParams.get("category");
+  const searchParam = searchParams.get("search") || ""; // ✅ FIX ADDED
+
   const categoryLabel = normalizeCategoryParam(categoryParam);
-  const categoryQuery = categoryLabel;
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,6 @@ const ProductList = ({
         const json = await res.json();
 
         setProducts(unwrapProductsResponse(json));
-
       } catch (err) {
         console.error("Fetch error:", err);
         setProducts([]);
@@ -57,29 +57,39 @@ const ProductList = ({
     };
 
     fetchProducts();
-  }, [categoryQuery, page, limit]); // ✅ SAFE dependencies
+  }, [categoryLabel]);
 
+  // reset page when filters change
   useEffect(() => {
     setPage(1);
-  }, [categoryLabel, activeFilters, priceRange, verifiedOnly, sortOption, limit]);
+  }, [categoryLabel, activeFilters, priceRange, verifiedOnly, sortOption, limit, searchParam]);
 
+  // ✅ MAIN FILTERING LOGIC
   const filteredAndSorted = useMemo(() => {
     const minPrice = Number(priceRange?.[0] ?? 0);
-    const maxPrice = Number(priceRange?.[1] ?? Number.POSITIVE_INFINITY);
+    const maxPrice = Number(priceRange?.[1] ?? Infinity);
 
     let list = Array.isArray(products) ? products : [];
 
+    // 🔥 PRICE FILTER
     list = list.filter((p) => {
       const price = Number(p?.price ?? 0);
-      if (Number.isFinite(minPrice) && price < minPrice) return false;
-      if (Number.isFinite(maxPrice) && price > maxPrice) return false;
+      if (price < minPrice) return false;
+      if (price > maxPrice) return false;
       return true;
     });
+
+    // 🔥 SEARCH FILTER (FIX)
+    if (searchParam.trim()) {
+      const term = searchParam.toLowerCase();
+      list = list.filter((p) =>
+        p.title?.toLowerCase().includes(term)
+      );
+    }
 
     if (verifiedOnly) {
       list = list.filter((p) => Number(p?.numReviews || 0) > 0);
     }
-
     list = list.filter((p) => matchesActiveFilters(p, activeFilters));
 
     if (sortOption === "Newest") {
@@ -91,10 +101,19 @@ const ProductList = ({
     }
 
     return list;
-  }, [products, activeFilters, priceRange, verifiedOnly, sortOption]);
+  }, [
+    products,
+    activeFilters,
+    priceRange,
+    verifiedOnly,
+    sortOption,
+    searchParam, 
+  ]);
 
   const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / limit));
+
   const safePage = Math.min(page, totalPages);
+
   const pageItems = useMemo(() => {
     const start = (safePage - 1) * limit;
     return filteredAndSorted.slice(start, start + limit);
@@ -111,7 +130,11 @@ const ProductList = ({
   return (
     <Box>
       <Typography variant="h6" sx={{ mb: 2 }}>
-        {categoryLabel ? formatCategoryLabel(categoryLabel) : "All Products"}
+        {searchParam
+          ? `Search results for "${searchParam}"`
+          : categoryLabel
+            ? formatCategoryLabel(categoryLabel)
+            : "All Products"}
       </Typography>
 
       {pageItems.length === 0 ? (

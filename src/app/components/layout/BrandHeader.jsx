@@ -9,7 +9,7 @@ import { ColorModeContext } from '../../context/ThemeContext';
 import { useCart } from '../../context/CartContext';
 import {
   useTheme, AppBar, Toolbar, Typography, Box, IconButton, InputBase,
-  Button, Stack, MenuItem, Select, Container, Badge, Drawer, List, ListItem, Menu, Divider, Paper
+  Button, Stack, MenuItem, MenuList, Select, Container, Badge, Drawer, List, ListItem, Menu, Divider, Paper
 } from '@mui/material';
 import {
   Person, Chat, Favorite, ShoppingCart,
@@ -19,7 +19,7 @@ import {
 const BrandHeader = () => {
   const theme = useTheme();
   const [mounted, setMounted] = useState(false);
-   const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
   const themeMode = useContext(ColorModeContext);
   const { cartItems } = useCart();
   const { wishlistItems } = useWishlist();
@@ -31,7 +31,7 @@ const BrandHeader = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
- 
+
   const isDark = theme.palette.mode === 'dark';
 
   // --- MongoDB Data States ---
@@ -67,11 +67,11 @@ const BrandHeader = () => {
   }, [mounted]);
 
   const cartCount = Array.isArray(cartItems)
-  ? cartItems.reduce((acc, item) => {
+    ? cartItems.reduce((acc, item) => {
       const qty = parseInt(item?.qty, 10);
       return acc + (isNaN(qty) ? 0 : qty);
     }, 0)
-  : 0;
+    : 0;
   const wishlistCount = wishlistItems.length;
 
   const categoryCards = useMemo(() => {
@@ -126,37 +126,37 @@ const BrandHeader = () => {
   const handleProfileOpen = (event) => setProfileAnchorEl(event.currentTarget);
   const handleProfileClose = () => setProfileAnchorEl(null);
   const handleLogout = () => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
-    method: "POST",
-    credentials: "include",
-  })
-    .then(() => {
-      handleProfileClose();
-      router.push("/auth/login"); // redirect after logout
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
     })
-    .catch(() => {
-      console.error("Logout failed");
-    });
-};
+      .then(() => {
+        handleProfileClose();
+        router.push("/auth/login"); // redirect after logout
+      })
+      .catch(() => {
+        console.error("Logout failed");
+      });
+  };
 
   useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-    credentials: "include",
-  })
-    .then((res) => {
-      if (!res.ok) return null;
-      return res.json();
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+      credentials: "include",
     })
-    .then((data) => {
-      if (data && data.user) {
-        setUser(data.user);
-      }
-    })
-    .catch(() => {
-      setUser(null);
-    });
-}, []);
- if (!mounted) return <Box sx={{ height: '70px', bgcolor: 'background.paper' }} />;
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(() => {
+        setUser(null);
+      });
+  }, []);
+  if (!mounted) return <Box sx={{ height: '70px', bgcolor: 'background.paper' }} />;
   return (
     <AppBar
       position="sticky" color="inherit" elevation={0}
@@ -206,7 +206,10 @@ const BrandHeader = () => {
                   }
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                onBlur={() => {
+                  // delay so click works properly
+                  setTimeout(() => setShowSuggestions(false), 150);
+                }}
                 sx={{ ml: 2, flex: 1, fontSize: '0.95rem', color: 'text.primary' }}
               />
               <Select
@@ -227,24 +230,25 @@ const BrandHeader = () => {
 
             {/* Suggestion Dropdown */}
             {showSuggestions && filteredSuggestions.length > 0 && (
-              <Paper 
-                elevation={3} 
+              <Paper
+                elevation={3}
                 sx={{ position: 'absolute', top: '100%', left: 0, right: 0, mt: 1, zIndex: 1500, borderRadius: '8px', overflow: 'hidden' }}
               >
-                <List disablePadding>
+                <MenuList disablePadding>
                   {filteredSuggestions.map((suggestion, idx) => (
-                    <MenuItem 
-                      key={idx} 
+                    <MenuItem
+                      key={idx}
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => {
                         setSearchTerm(suggestion);
-                        handleSearch();
+                        setShowSuggestions(false);
                       }}
                       sx={{ py: 1.5 }}
                     >
                       <Typography variant="body2">{suggestion}</Typography>
                     </MenuItem>
                   ))}
-                </List>
+                </MenuList>
               </Paper>
             )}
           </Box>
@@ -277,10 +281,15 @@ const BrandHeader = () => {
         PaperProps={{ sx: { width: '220px', mt: 1, borderRadius: '8px' } }}
       >
         <MenuItem disabled sx={{ opacity: '1 !important', color: 'text.primary', fontWeight: 600 }}>
-  Account holder: {user ? user.name : "Guest"}
-</MenuItem>
+          Account holder: {user ? user.name : "Guest"}
+        </MenuItem>
         <Divider />
-        <MenuItem onClick={() => handleProfileAction('/profile')}>
+        <MenuItem
+          onClick={() => {
+            handleProfileClose();
+            router.push('/profile');
+          }}
+        >
           <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
             <Person fontSize="small" sx={{ color: '#0D6EFD' }} />
             <Typography variant="body2">My Profile</Typography>

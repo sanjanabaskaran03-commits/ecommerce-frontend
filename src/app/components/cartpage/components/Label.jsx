@@ -12,10 +12,9 @@ const Label = () => {
     <LayoutContainer>
     <Stack
       direction="row"
-      justifyContent="space-between"
       spacing={2}
       mt={5}
-      sx={{ display: { xs: 'none', md: "flex" }, alignItems: "center" }}
+      sx={{ display: { xs: 'none', md: "flex" }, alignItems: "center", justifyContent: "space-between" }}
     >
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
             <Stack width="40px" height="40px" borderRadius="50%" bgcolor="#DEE2E7" direction="row" sx={{ alignItems: "center", justifyContent: "center" }}>

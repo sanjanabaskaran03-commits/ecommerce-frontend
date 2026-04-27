@@ -75,7 +75,7 @@ const CartItem = () => {
 
                       {/* Item Details */}
                       <Box sx={{ flexGrow: 1 }}>
-                        <Stack direction="row" justifyContent="space-between" sx={{ alignItems: "flex-start" }}>
+                        <Stack direction="row" sx={{ alignItems: "flex-start", justifyContent: "space-between" }}>
                           <Box>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, textAlign: "left" }}>
                               {item.title}

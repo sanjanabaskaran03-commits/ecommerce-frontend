@@ -11,13 +11,13 @@ const PaginationSection = ({ page, setPage, totalPages, limit, setLimit }) => {
     <Box sx={{ width: "100%" }}>
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        justifyContent={{ xs: "center", md: "flex-end" }}
         spacing={2}
         sx={{
           width: "100%",
           mt: 4,
           mb: 6,
           alignItems: "center",
+          justifyContent: { xs: "center", md: "flex-end" },
         }}
       >
         {/* ✅ LIMIT SELECT */}
