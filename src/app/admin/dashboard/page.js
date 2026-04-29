@@ -45,12 +45,9 @@ export default function DashboardPage() {
   return (
     <Box
       sx={{
-        p: { xs: 2, sm: 3, md: 4 },
-        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         gap: 3,
-        bgcolor: "background.default",
       }}
     >
       {/* STATS ROW */}

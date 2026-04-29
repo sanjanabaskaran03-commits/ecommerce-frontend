@@ -141,30 +141,37 @@ const ProductList = ({
         <Typography>No products found</Typography>
       ) : (
         <>
-          <Box
-            sx={{
-              display: viewMode === "grid" ? "grid" : "block",
-              gridTemplateColumns:
-                viewMode === "grid"
-                  ? { xs: "repeat(2, 1fr)", sm: "repeat(3, 1fr)" }
-                  : undefined,
-              gap: viewMode === "grid" ? 2 : 0,
-            }}
-          >
-            {pageItems.map((item, index) => (
-              <Box
-                key={item._id}
-                onClick={() => router.push(`/detail/${item._id}`)}
-                sx={{ cursor: "pointer", mb: viewMode === "grid" ? 0 : 2 }}
-              >
-                <ProductCard
-                  product={item}
-                  viewMode={viewMode}
-                  isFirst={index === 0}
-                />
-              </Box>
-            ))}
-          </Box>
+         <Box
+  sx={{
+    display: viewMode === "grid" ? "grid" : "block",
+    gridTemplateColumns:
+      viewMode === "grid"
+        ? {
+            xs: "repeat(2, 1fr)",
+            sm: "repeat(3, 1fr)",
+            md: "repeat(4, 1fr)", // ✅ better desktop layout
+          }
+        : undefined,
+    gap: 2,
+    alignItems: "stretch", // ✅ important
+  }}
+>
+  {pageItems.map((item, index) => (
+    <Box
+      key={item._id}
+      onClick={() => router.push(`/detail/${item._id}`)}
+      sx={{
+        cursor: "pointer",
+        height: "100%",     // ✅ makes all equal
+      }}
+    >
+      <ProductCard
+        product={item}
+        viewMode={viewMode}
+      />
+    </Box>
+  ))}
+</Box>
 
           <PaginationSection
             page={safePage}

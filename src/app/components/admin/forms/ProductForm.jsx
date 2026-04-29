@@ -10,8 +10,6 @@ import {
   FormControlLabel,
   Select,
   MenuItem,
-  FormControl,
-  InputLabel,
   useTheme
 } from "@mui/material";
 
@@ -27,8 +25,8 @@ export default function ProductForm({ isEdit, productId }) {
     discountPercent: "",
     imageName: "",
     stock: "",
-    dealStart: "",   
-  dealEnd: "", 
+    dealStart: "",
+    dealEnd: "",
     specifications: {
       Material: "",
       Type: "",
@@ -43,7 +41,6 @@ export default function ProductForm({ isEdit, productId }) {
   const [imageBase64, setImageBase64] = useState("");
   const [message, setMessage] = useState("");
 
-  // FETCH PRODUCT (EDIT MODE)
   useEffect(() => {
     if (!isEdit || !productId) return;
 
@@ -59,6 +56,8 @@ export default function ProductForm({ isEdit, productId }) {
           discountPercent: data.discountPercent || "",
           imageName: data.imageName || "",
           stock: data.stock || "",
+          dealStart: data.dealStart || "",
+          dealEnd: data.dealEnd || "",
           specifications: {
             Material: data.specifications?.Material || "",
             Type: data.specifications?.Type || "",
@@ -86,22 +85,15 @@ export default function ProductForm({ isEdit, productId }) {
     "Machinery tools",
   ];
 
-  // HANDLE INPUT CHANGE
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMessage("");
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value // ✅ always keep as string
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // HANDLE SPEC CHANGE
   const handleSpecChange = (e) => {
     const { name, value } = e.target;
     setMessage("");
-
     setForm((prev) => ({
       ...prev,
       specifications: {
@@ -111,10 +103,7 @@ export default function ProductForm({ isEdit, productId }) {
     }));
   };
 
-  // HANDLE SECTION CHECKBOX
   const handleSectionChange = (section) => {
-    setMessage("");
-
     setForm((prev) => {
       const exists = prev.sectionTags.includes(section);
       return {
@@ -126,25 +115,18 @@ export default function ProductForm({ isEdit, productId }) {
     });
   };
 
-  // IMAGE UPLOAD
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
 
-    reader.onloadend = () => {
-      setImageBase64(reader.result);
-    };
+    reader.onloadend = () => setImageBase64(reader.result);
 
     if (file) {
       reader.readAsDataURL(file);
-      setForm((prev) => ({
-        ...prev,
-        imageName: file.name
-      }));
+      setForm((prev) => ({ ...prev, imageName: file.name }));
     }
   };
 
-  // SUBMIT
   const handleSubmit = () => {
     const payload = {
       ...form,
@@ -172,7 +154,6 @@ export default function ProductForm({ isEdit, productId }) {
       .then((data) => {
         if (data._id) {
           setMessage(isEdit ? "✅ Updated successfully" : "✅ Added successfully");
-
           setTimeout(() => setMessage(""), 2000);
 
           if (!isEdit) {
@@ -181,91 +162,148 @@ export default function ProductForm({ isEdit, productId }) {
           }
         } else {
           setMessage(data.message || "❌ Failed");
-          setTimeout(() => setMessage(""), 2000);
         }
       })
-      .catch(() => {
-        setMessage("❌ Error occurred");
-        setTimeout(() => setMessage(""), 3000);
-      });
+      .catch(() => setMessage("❌ Error occurred"));
   };
 
+  // Row component
+  const Row = ({ children }) => (
+    <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+      {children}
+    </Stack>
+  );
+
+  // ✅ FIXED Field component
+  const Field = ({ label, children, sx, labelSx }) => (
+    <Stack spacing={0.5} sx={{ flex: 1, ...sx }}>
+      <Typography sx={{ fontWeight: "bold", ...labelSx }}>
+        {label}
+      </Typography>
+      {children}
+    </Stack>
+  );
+
   return (
-    <Stack spacing={2} maxWidth={420}>
-      <Typography variant="h5" sx={{ textAlign: "center", fontWeight: 600 }}>
+    <Stack spacing={2} sx={{ maxWidth: 1280, mx: "auto" }}>
+      <Typography variant="h5" textAlign="center" fontWeight={600}>
         {isEdit ? "Edit Product" : "Add Product"}
       </Typography>
 
-      <TextField name="title" label="Title" value={form.title} onChange={handleChange} />
-      <TextField name="price" label="Price" type="number" value={form.price} onChange={handleChange} />
-      <TextField name="stock" label="Stock Quantity" type="text" value={form.stock} onChange={handleChange} />
+      <Row>
+        <Field label="Title">
+          <TextField name="title" value={form.title} onChange={handleChange} fullWidth />
+        </Field>
+        <Field label="Price">
+          <TextField name="price" type="number" value={form.price} onChange={handleChange} fullWidth />
+        </Field>
+      </Row>
 
-      <FormControl fullWidth>
-        <InputLabel id="category-label">Category</InputLabel>
-        <Select
-          labelId="category-label"
-          name="category"
-          value={form.category}
-          label="Category"
-          onChange={handleChange}
-        >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+      <Row>
+        {/* ✅ NOW sx works */}
+        <Field label="Stock Quantity" sx={{}}>
+          <TextField name="stock" value={form.stock} onChange={handleChange} fullWidth />
+        </Field>
+
+        <Field label="Category">
+          <Select name="category" value={form.category} onChange={handleChange} fullWidth>
+            {categories.map((cat) => (
+              <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+            ))}
+          </Select>
+        </Field>
+      </Row>
+
+      <Row>
+        <Field label="Description">
+          <TextField multiline rows={3} name="description" value={form.description} onChange={handleChange} fullWidth />
+        </Field>
+
+        <Field label="Discount %">
+          <TextField name="discountPercent" type="number" value={form.discountPercent} onChange={handleChange} fullWidth />
+        </Field>
+      </Row>
+
+      <Row>
+        <Field label="Deal Start">
+          <TextField type="datetime-local" name="dealStart" value={form.dealStart} onChange={handleChange} fullWidth />
+        </Field>
+
+        <Field label="Deal End">
+          <TextField type="datetime-local" name="dealEnd" value={form.dealEnd} onChange={handleChange} fullWidth />
+        </Field>
+      </Row>
+
+      <Row>
+        <Field label="Product Image">
+          <Stack direction="row" spacing={2}>
+            <TextField value={form.imageName} fullWidth InputProps={{ readOnly: true }} />
+            <Button variant="contained" component="label">
+              Upload
+              <input hidden type="file" onChange={handleImageChange} />
+            </Button>
+          </Stack>
+        </Field>
+
+        <Field label="Sections">
+          <Stack
+            direction="row"
+            flexWrap="wrap"   // ✅ correct spelling
+            spacing={{xs:1.5,md:10}}           // ✅ controls space BETWEEN groups
+            sx={{ width: "100%" }}
+          >
+            {[ { label: "Deals", value: "deals" },
+  { label: "Electronics", value: "electronics" },
+  { label: "Home", value: "home" }].map((section) => (
+              <Stack
+                key={section.value}
+                direction="row"
+                alignItems="center"
+                spacing={0}   // ✅ space BETWEEN checkbox & text
+              >
+                <Checkbox
+                  size="small"
+                  sx={{ p: 0.5 }}
+                  key={section.value}
+checked={form.sectionTags.includes(section.value)}
+onChange={() => handleSectionChange(section.value)}
+                />
+
+                <Typography
+                  sx={{
+                    fontSize: { xs: "0.75rem",sm:"1.25rem", md: "1rem" },
+                    lineHeight: 3.5   // ✅ fix vertical alignment
+                  }}
+                >
+                  {section.label}
+                </Typography>
+              </Stack>
+            ))}
+          </Stack>
+        </Field>
+      </Row>
+
+      <Typography sx={{ fontWeight: "bold", fontSize: "1.15rem" }}>
+        Specifications:
+      </Typography>
+
+      {Object.keys(form.specifications).reduce((rows, key, index, arr) => {
+        if (index % 2 === 0) rows.push(arr.slice(index, index + 2));
+        return rows;
+      }, []).map((pair, i) => (
+        <Stack key={i} direction={{ xs: "column", md: "row" }} spacing={2}>
+          {pair.map((key) => (
+            <Stack key={key} spacing={0.5} sx={{ flex: 1 }}>
+              <Typography sx={{ fontWeight: "bold" }}>{key}</Typography>
+              <TextField
+                name={key}
+                value={form.specifications[key]}
+                onChange={handleSpecChange}
+                fullWidth
+              />
+            </Stack>
           ))}
-        </Select>
-      </FormControl>
-
-      <TextField name="description" label="Description" multiline rows={3} value={form.description} onChange={handleChange} />
-      <TextField name="discountPercent" label="Discount %" type="number" value={form.discountPercent} onChange={handleChange} />
-      <TextField
-  name="dealStart"
-  label="Deal Start"
-  type="datetime-local"
-  value={form.dealStart}
-  onChange={handleChange}
-  InputLabelProps={{ shrink: true }}
-/>
-
-<TextField
-  name="dealEnd"
-  label="Deal End"
-  type="datetime-local"
-  value={form.dealEnd}
-  onChange={handleChange}
-  InputLabelProps={{ shrink: true }}
-/>
-
-      <Stack direction="row" spacing={2}>
-        <TextField value={form.imageName} fullWidth InputProps={{ readOnly: true }} />
-        <Button variant="contained" component="label">
-          Upload
-          <input hidden type="file" onChange={handleImageChange} />
-        </Button>
-      </Stack>
-
-      <Typography>Sections</Typography>
-      {["deals", "electronics", "home"].map((section) => (
-        <FormControlLabel
-          key={section}
-          control={
-            <Checkbox
-              checked={form.sectionTags.includes(section)}
-              onChange={() => handleSectionChange(section)}
-            />
-          }
-          label={section}
-        />
-      ))}
-
-      <Typography>Specifications</Typography>
-      {Object.keys(form.specifications).map((key) => (
-        <TextField
-          key={key}
-          name={key}
-          label={key}
-          value={form.specifications[key]}
-          onChange={handleSpecChange}
-        />
+        </Stack>
       ))}
 
       <Button variant="contained" onClick={handleSubmit}>

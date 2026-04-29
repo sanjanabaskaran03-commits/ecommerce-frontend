@@ -5,6 +5,7 @@ import { Container } from "@mui/material";
 const LayoutContainer = ({ children }) => {
   return (
     <Container
+      disableGutters
       maxWidth={false}
       sx={{
         maxWidth: "1280px",

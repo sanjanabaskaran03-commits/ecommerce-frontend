@@ -42,7 +42,7 @@ const Deals = () => {
 
   const [deals, setDeals] = useState([]);
 
- useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     const loadDeals = async () => {
       try {
@@ -55,12 +55,12 @@ const Deals = () => {
             : Array.isArray(json?.products)
               ? json.products
               : [];
-        
+
         if (isMounted) {
           const filteredDeals = products.filter(
             (item) => item?.sectionTags && item.sectionTags.includes("deals")
           );
-            
+
           setDeals(filteredDeals);
         }
       } catch (err) {
@@ -158,8 +158,13 @@ const Deals = () => {
               >
                 <Box sx={{ position: "relative", height: { xs: 100, md: 120 }, width: 120, mb: 2 }}>
                   <Image
-                    src={item.image || "/images/placeholder.png"}
-  alt={item.title || "product"}
+                    src={
+                      item.image?.startsWith("data:image")
+                        ? item.image
+                        : "/images/placeholder.png"
+                    }
+                    unoptimized
+                    alt={item.title || "product"}
                     fill
                     sizes="120px"
                     style={{ objectFit: "contain" }}

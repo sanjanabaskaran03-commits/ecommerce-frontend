@@ -13,7 +13,8 @@ import {
   Chip,
   Paper,
   TableContainer,
-  Avatar
+  Avatar,
+  Stack
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import ProductFilters from "@/src/app/components/admin/products/ProductFilters";
@@ -51,30 +52,33 @@ export default function ProductsPage() {
     const matchesSearch = p.title?.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = filter.category ? p.category === filter.category : true;
     const matchesSection = filter.section ? p.sectionTags?.includes(filter.section) : true;
-    const matchesStock = filter.stock === "in" ? p.stock > 0 : filter.stock === "out" ? p.stock === 0 : true;
+    const matchesStock =
+      filter.stock === "in"
+        ? p.stock > 0
+        : filter.stock === "out"
+        ? p.stock === 0
+        : true;
+
     return matchesSearch && matchesCategory && matchesSection && matchesStock;
   });
 
   if (loading) return <Typography sx={{ p: 4 }}>Loading products...</Typography>;
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* HEADER SECTION */}
+    <Box>
+
+      {/* HEADER */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           mb: 4,
-          flexWrap: "wrap", // ✅ prevents breaking on small screens
+          flexWrap: "wrap",
           gap: 2,
         }}
       >
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          sx={{ color: "text.primary" }}
-        >
+        <Typography variant="h4" fontWeight="bold" sx={{color:"text.primary"}}>
           Products
         </Typography>
 
@@ -84,8 +88,6 @@ export default function ProductsPage() {
           sx={{
             borderRadius: "8px",
             textTransform: "none",
-            px: 3,
-            whiteSpace: "nowrap",
           }}
         >
           + Add Product
@@ -102,87 +104,171 @@ export default function ProductsPage() {
         />
       </Box>
 
-      {/* TABLE SECTION */}
-      <TableContainer component={Paper} sx={{ borderRadius: "12px", boxShadow: 3 }}>
+      {/* ================= MOBILE / TABLET ================= */}
+      <Stack spacing={2} sx={{ display: { xs: "flex", md: "none" } }}>
+        {filteredProducts.map((p) => (
+          <Paper
+            key={p._id}
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              display: "flex",
+              gap: 2,
+              alignItems: "center",
+              bgcolor: "background.paper",
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            {/* IMAGE */}
+            <Avatar
+              src={p.image || "/images/sample.jpg"}
+              variant="rounded"
+              sx={{ width: 64, height: 64 }}
+            />
+
+            {/* CONTENT */}
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+
+              {/* TITLE */}
+              <Typography
+                fontWeight={600}
+                noWrap
+                sx={{ fontSize: "0.95rem" }}
+              >
+                {p.title}
+              </Typography>
+
+              {/* STATUS */}
+              <Chip
+                label={p.stock > 0 ? "In Stock" : "Out of Stock"}
+                color={p.stock > 0 ? "success" : "error"}
+                size="small"
+                sx={{ my: 0.5, borderRadius:"8px" }}
+               
+              />
+
+              {/* PRICE + ACTIONS */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "0.9rem",
+                    color: "text.secondary",
+                  }}
+                >
+                  ${p.price?.toLocaleString()}
+                </Typography>
+
+                <Stack direction="row" spacing={1}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() =>
+                      router.push(`/admin/edit-product/${p._id}`)
+                    }
+                    sx={{ textTransform: "none", borderRadius: 2 }}
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    size="small"
+                    color="error"
+                    variant="outlined"
+                    onClick={() => handleDelete(p._id)}
+                    sx={{ textTransform: "none", borderRadius: 2 }}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              </Box>
+
+            </Box>
+          </Paper>
+        ))}
+      </Stack>
+
+      {/* ================= DESKTOP TABLE ================= */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: "12px",
+          boxShadow: 3,
+          display: { xs: "none", md: "block" }
+        }}
+      >
         <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold",fontSize:16 }}>Image</TableCell>
-              <TableCell sx={{ fontWeight: "bold",fontSize:16  }}>Title</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,fontSize:16 }}>Price</TableCell>
-              <TableCell sx={{ fontWeight: "bold",fontSize:16  }}>Stock</TableCell>
-              <TableCell sx={{ fontWeight: "bold",fontSize:16  }}>Category</TableCell>
-              <TableCell sx={{ fontWeight: "bold" ,fontSize:16 }}>Status</TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold", pr: 4 }}>Actions</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Image</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Price</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Stock</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Category</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+              <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {filteredProducts.map((p) => (
-              <TableRow key={p._id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableRow key={p._id} hover>
 
-                {/* IMAGE - Using Avatar for consistent sizing */}
                 <TableCell>
                   <Avatar
                     src={p.image || "/images/sample.jpg"}
                     variant="rounded"
-                    sx={{ width: 48, height: 48, border: "1px solid #eee" }}
+                    sx={{ width: 48, height: 48 }}
                   />
                 </TableCell>
 
-                {/* TITLE */}
-                <TableCell sx={{ fontWeight: 500 }}>{p.title}</TableCell>
-
-                {/* PRICE */}
+                <TableCell>{p.title}</TableCell>
                 <TableCell>${p.price?.toLocaleString()}</TableCell>
-
-                {/* STOCK */}
                 <TableCell>{p.stock}</TableCell>
+                <TableCell>{p.category}</TableCell>
 
-                {/* CATEGORY */}
-                <TableCell>
-                  <Typography variant="body2" color="text.secondary">
-                    {p.category || "Uncategorized"}
-                  </Typography>
-                </TableCell>
-
-                {/* STATUS */}
                 <TableCell>
                   <Chip
-                    label={p.stock > 0 ? "In Stock" : "Out of Stock"}
-                    color={p.stock > 0 ? "success" : "error"}
-                    size="small"
-                    sx={{ fontWeight: "bold", borderRadius: "6px" }}
-                  />
+  label={p.stock > 0 ? "In Stock" : "Out of Stock"}
+  size="small"
+  sx={{
+    bgcolor: p.stock > 0 ? "success.main" : "error.main",
+    color: "text.primary", // ✅ always readable
+    fontWeight: 600,
+    borderRadius: "8px"
+  }}
+/>
                 </TableCell>
 
-                {/* ACTIONS */}
                 <TableCell align="right">
-                  <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+                  <Stack direction="row" spacing={1} sx={{justifyContent:"flex-start"}}>
                     <Button
                       size="small"
                       variant="outlined"
-                      sx={{
-                        borderColor: "main",
-                        textTransform: "none",
-                      }}
-                      onClick={() => router.push(`/admin/edit-product/${p._id}`)}
+                      onClick={() =>
+                        router.push(`/admin/edit-product/${p._id}`)
+                      }
                     >
                       Edit
                     </Button>
 
                     <Button
                       size="small"
-                      variant="outlined"
                       color="error"
-                      sx={{
-                        textTransform: "none",
-                      }}
+                      variant="outlined"
                       onClick={() => handleDelete(p._id)}
                     >
                       Delete
                     </Button>
-                  </Box>
+                  </Stack>
                 </TableCell>
 
               </TableRow>
@@ -190,6 +276,7 @@ export default function ProductsPage() {
           </TableBody>
         </Table>
       </TableContainer>
+
     </Box>
   );
 }

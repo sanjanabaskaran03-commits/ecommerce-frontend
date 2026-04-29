@@ -1,7 +1,19 @@
 "use client";
 
-import { Box, Typography, Button, IconButton, Container, Stack } from "@mui/material";
-import { useRouter, usePathname } from "next/navigation";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  Stack,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText
+} from "@mui/material";
+
+import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import InventoryIcon from "@mui/icons-material/Inventory2";
@@ -9,14 +21,21 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LogoutIcon from "@mui/icons-material/Logout";
+
+import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
 import { useColorMode } from "@/src/app/context/ThemeContext";
+import { useState } from "react";
+
+import LayoutContainer from "@/src/app/components/common/LayoutContainer";
 
 export default function AdminHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const theme = useTheme();
   const { toggleColorMode } = useColorMode();
+
+  const [open, setOpen] = useState(false);
 
   const menu = [
     { label: "Dashboard", path: "/admin/dashboard", icon: <DashboardIcon fontSize="small" /> },
@@ -34,96 +53,160 @@ export default function AdminHeader() {
   };
 
   return (
-    <Box 
-      component="header"
-      sx={{ 
-        bgcolor: "background.paper", 
-        borderBottom: "1px solid", 
-        borderColor: "divider",
-        position: "sticky",
-        top: 0,
-        zIndex: 1100 
-      }}
-    >
-      <Container maxWidth="xl">
-        {/* TOP BAR */}
-        <Box
-          sx={{
-            height: 64,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          {/* LEFT: LOGO & NAV COMBINED FOR NEATNESS */}
-          <Stack direction="row" alignItems="center" spacing={4}>
-            <Box 
-              display="flex" 
-              alignItems="center" 
-              gap={1.5} 
-              sx={{ cursor: "pointer" }}
-              onClick={() => router.push("/admin/dashboard")}
-            >
-              <Box style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Box sx={{ bgcolor: '#0D6EFD', borderRadius: '8px', p: { xs: 0.5, md: 0.8 }, display: 'flex' }}>
-                  <ShoppingBag sx={{ color: '#fff', fontSize: { xs: '1.4rem', md: '1.8rem' } }} />
-                </Box>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: '#8CB7F5', display: { xs: 'none', md: 'block' }, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>Brand</Typography>
-              </Box>
-              </Box>
+    <>
+      <Box
+        component="header"
+        sx={{
+          bgcolor: "background.paper",
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          position: "sticky",
+          top: 0,
+          zIndex: 1100
+        }}
+      >
+        <LayoutContainer>
+          <Box
+            sx={{
+              height: 84,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}
+          >
 
-            {/* INTEGRATED MENU BAR (Cleaner than a second row) */}
-            <Stack direction="row" spacing={1}>
-              {menu.map((item) => {
-                const active = pathname === item.path;
-                return (
-                  <Button
-                    key={item.label}
-                    startIcon={item.icon}
-                    onClick={() => router.push(item.path)}
+            {/* 🔥 LEFT SIDE */}
+            <Stack direction="row" sx={{alignItems:"center"}}>
+
+              {/* MOBILE MENU */}
+              <IconButton
+                onClick={() => setOpen(true)}
+                sx={{ display: { xs: "flex", md: "none" }}}
+              >
+                <MenuIcon />
+              </IconButton>
+
+              {/* 🔥 GROUP WRAPPER (IMPORTANT FIX) */}
+              <Stack
+                direction="row"
+                sx={{alignItems:"center"}}
+                spacing={4}   // 👈 CONTROL GAP BETWEEN BRAND & MENU HERE
+              >
+
+                {/* ✅ GROUP 1: LOGO + BRAND */}
+                <Stack
+                  direction="row"
+                  spacing={1.5}
+                  sx={{ cursor: "pointer",alignItems:"center" }}
+                  onClick={() => router.push("/admin/dashboard")}
+                >
+                  <Box
                     sx={{
-                      textTransform: "none",
+                      bgcolor: "#0D6EFD",
                       borderRadius: "8px",
-                      px: 2,
-                      fontWeight: active ? 600 : 400,
-                      bgcolor: active ? "action.selected" : "transparent",
-                      color: active ? "primary.main" : "text.primary",
-                      "&:hover": {
-                        bgcolor: "action.hover",
-                        color: "primary.main",
-                      },
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+
+                      // ✅ FIXED SIZE (important for alignment)
+                      width: { xs: 32, md: 38 },
+                      height: { xs: 32, md: 39 },
                     }}
                   >
-                    {item.label}
-                  </Button>
-                );
-              })}
+                    <ShoppingBag sx={{ color: "#fff", fontSize: { xs: "1.4rem", md: "1.8rem" } }} />
+                  </Box>
+
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 800,
+                      color: "#8CB7F5",
+                      display: { xs: "none", md: "block" }
+                    }}
+                  >
+                    Brand
+                  </Typography>
+                </Stack>
+
+                {/* ✅ GROUP 2: MENU */}
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ display: { xs: "none", md: "flex" } }}
+                >
+                  {menu.map((item) => {
+                    const active = pathname === item.path;
+                    return (
+                      <Button
+                        key={item.label}
+                        startIcon={item.icon}
+                        onClick={() => router.push(item.path)}
+                        sx={{
+                          textTransform: "none",
+                          borderRadius: "8px",
+                          px: 2,
+                          fontWeight: active ? 600 : 400,
+                          bgcolor: active ? "action.selected" : "transparent",
+                          color: active ? "primary.main" : "text.primary"
+                        }}
+                      >
+                        {item.label}
+                      </Button>
+                    );
+                  })}
+                </Stack>
+
+              </Stack>
             </Stack>
-          </Stack>
 
-          {/* RIGHT: ACTIONS */}
-          <Stack direction="row" alignItems="center" spacing={1.5}>
-            <IconButton 
-              onClick={toggleColorMode} 
-              size="small"
-              sx={{ border: "1px solid", borderColor: "divider" }}
-            >
-              {theme.palette.mode === "light" ? <DarkModeIcon fontSize="small" /> : <LightModeIcon fontSize="small" />}
-            </IconButton>
+            {/* RIGHT */}
+            <Stack direction="row" sx={{alignItems:"center"}} spacing={1.5}>
+              <IconButton
+                onClick={toggleColorMode}
+                size="small"
+                sx={{ border: "1px solid", borderColor: "divider" }}
+              >
+                {theme.palette.mode === "light" ? (
+                  <DarkModeIcon fontSize="small" />
+                ) : (
+                  <LightModeIcon fontSize="small" />
+                )}
+              </IconButton>
 
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              size="small"
-              startIcon={<LogoutIcon />}
-              onClick={handleLogout}
-              sx={{ textTransform: "none", borderRadius: "8px" }}
-            >
-              Logout
-            </Button>
-          </Stack>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<LogoutIcon />}
+                onClick={handleLogout}
+                sx={{ textTransform: "none", borderRadius: "8px" }}
+              >
+                Logout
+              </Button>
+            </Stack>
+
+          </Box>
+        </LayoutContainer>
+      </Box>
+
+      {/* DRAWER */}
+      <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
+        <Box sx={{ width: 250 }}>
+          <List>
+            {menu.map((item) => (
+              <ListItemButton
+                key={item.label}
+                onClick={() => {
+                  router.push(item.path);
+                  setOpen(false);
+                }}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            ))}
+          </List>
         </Box>
-      </Container>
-    </Box>
+      </Drawer>
+    </>
   );
 }
