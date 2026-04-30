@@ -27,41 +27,41 @@ export default function AdminSidebar() {
         p: 2,
       }}
     >
-     {/* 🔹 LOGO (FIXED) */}
-<Box
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    gap: 1.5,
-    mb: 3,
-  }}
->
-  {/* Icon box */}
-  <Box
-    sx={{
-      bgcolor: "#0D6EFD",
-      borderRadius: "10px",
-      p: 1,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
-    <ShoppingBag sx={{ color: "#fff", fontSize: "1.5rem" }} />
-  </Box>
+      {/* 🔹 LOGO (FIXED) */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          mb: 3,
+        }}
+      >
+        {/* Icon box */}
+        <Box
+          sx={{
+            bgcolor: "#0D6EFD",
+            borderRadius: "10px",
+            p: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ShoppingBag sx={{ color: "#fff", fontSize: "1.5rem" }} />
+        </Box>
 
-  {/* Brand text */}
-  <Typography
-    sx={{
-      fontWeight: 800,
-      color: "#8CB7F5",
-      fontSize: "32px",
-      lineHeight: 1,
-    }}
-  >
-    Brand
-  </Typography>
-</Box>
+        {/* Brand text */}
+        <Typography
+          sx={{
+            fontWeight: 800,
+            color: "#8CB7F5",
+            fontSize: "32px",
+            lineHeight: 1,
+          }}
+        >
+          Brand
+        </Typography>
+      </Box>
       {/* 🔹 MENU */}
       <Stack spacing={1}>
         {menu.map((item) => {

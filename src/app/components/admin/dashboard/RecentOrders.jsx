@@ -38,9 +38,9 @@ export default function RecentOrders() {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell style={{ color: theme.palette.text.primary,fontSize:18,fontWeight:200 }}>User</TableCell>
-            <TableCell style={{ color: theme.palette.text.primary ,fontSize:18,fontWeight:200}}>Total</TableCell>
-            <TableCell style={{ color: theme.palette.text.primary,fontSize:18,fontWeight:200 }}>Status</TableCell>
+            <TableCell style={{ color: theme.palette.text.primary, fontSize: 18, fontWeight: 200 }}>User</TableCell>
+            <TableCell style={{ color: theme.palette.text.primary, fontSize: 18, fontWeight: 200 }}>Total</TableCell>
+            <TableCell style={{ color: theme.palette.text.primary, fontSize: 18, fontWeight: 200 }}>Status</TableCell>
           </TableRow>
         </TableHead>
 
@@ -57,8 +57,8 @@ export default function RecentOrders() {
                     order.status === "Delivered"
                       ? "success"
                       : order.status === "Pending"
-                      ? "warning"
-                      : "error"
+                        ? "warning"
+                        : "error"
                   }
                 />
               </TableCell>

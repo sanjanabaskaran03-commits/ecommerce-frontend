@@ -1,9 +1,9 @@
 "use client";
 
-import { Box, Typography,useTheme} from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 
 export default function StatsCard({ title, value }) {
-  const theme=useTheme()
+  const theme = useTheme()
   return (
     <Box
       sx={{

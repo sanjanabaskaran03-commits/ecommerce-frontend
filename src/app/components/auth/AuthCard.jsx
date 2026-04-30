@@ -6,7 +6,7 @@ export default function AuthCard({ children }) {
   const theme = useTheme();
 
   return (
-    
+
     <Box
       sx={{
         display: "flex",
@@ -48,16 +48,16 @@ export default function AuthCard({ children }) {
           Welcome to
         </Typography>
         <Typography
-        variant="h3"
-        fontSize={34}
-        fontWeight={700}
-        sx={{
-          color: '#8CB7F5',
-          lineHeight: 1.2,
-        }}
-      >
-        Brand App
-      </Typography>
+          variant="h3"
+          fontSize={34}
+          fontWeight={700}
+          sx={{
+            color: '#8CB7F5',
+            lineHeight: 1.2,
+          }}
+        >
+          Brand App
+        </Typography>
 
         <Typography variant="body2" sx={{ mt: 1, textAlign: "center" }}>
           Shop smarter with best deals on electronics & more
@@ -73,7 +73,7 @@ export default function AuthCard({ children }) {
           justifyContent: "center",
         }}
       >
-        <Box sx={{ width: "100%", maxWidth: 320,textAlign:"center" }}>
+        <Box sx={{ width: "100%", maxWidth: 320, textAlign: "center" }}>
           {children}
         </Box>
       </Box>

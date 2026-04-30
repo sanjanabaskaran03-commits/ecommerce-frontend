@@ -7,6 +7,8 @@ import { useTheme } from '@mui/material/styles';
 import { usePathname, useSearchParams, useParams } from 'next/navigation';
 import LayoutContainer from '@/src/app/components/common/LayoutContainer';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 const BreadcrumbSection = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -28,7 +30,7 @@ const BreadcrumbSection = () => {
         try {
           setLoading(true);
           if (productId) {
-            const res = await fetch(`/api/products/${productId}`);
+            const res = await fetch(`${API_BASE}/api/products/${productId}`);
             if (res.ok) {
               const data = await res.json();
               setCurrentProduct(data);
@@ -37,7 +39,7 @@ const BreadcrumbSection = () => {
           }
 
           // Fallback: use first product when no ID or failed fetch
-          const listRes = await fetch('/api/products');
+          const listRes = await fetch(`${API_BASE}/api/products`);
           if (listRes.ok) {
             const listData = await listRes.json();
             const fallbackProduct =

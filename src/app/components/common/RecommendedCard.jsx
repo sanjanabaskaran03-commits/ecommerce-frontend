@@ -3,11 +3,13 @@
 import React from "react";
 import { Paper, Box, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const MotionPaper = motion.create(Paper);
 
-const RecommendedCard = ({ img, price, title }) => {
+const RecommendedCard = ({ id, img, price, title }) => {
   const theme = useTheme();
+  const router = useRouter();
 
   return (
     <MotionPaper
@@ -32,6 +34,9 @@ const RecommendedCard = ({ img, price, title }) => {
         "&:hover": {
           boxShadow: theme.shadows[4],
         },
+      }}
+      onClick={() => {
+        if (id) router.push(`/detail/${id}`);
       }}
     >
       {/* ✅ IMAGE (ONLY ONE, BASE64 SAFE) */}

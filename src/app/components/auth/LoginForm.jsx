@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [form, setForm] = useState({
     email: "",
@@ -37,7 +38,8 @@ export default function LoginForm() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const API = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,8 +58,15 @@ export default function LoginForm() {
       if (data.role === "admin") {
         router.push("/admin/dashboard");
       } else {
-        router.push("/");
+        const next = searchParams.get("next");
+        if (next) {
+          router.push(next);
+        } else {
+          router.push("/");
+        }
       }
+
+      window.dispatchEvent(new Event("auth-changed"));
     } catch (err) {
       setError("Something went wrong");
     }

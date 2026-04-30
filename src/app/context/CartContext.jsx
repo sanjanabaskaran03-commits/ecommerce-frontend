@@ -1,114 +1,191 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
+function redirectToLogin() {
+  if (typeof window === "undefined") return;
+  const next = encodeURIComponent(
+    `${window.location.pathname}${window.location.search || ""}`
+  );
+  window.location.href = `/auth/login?next=${next}`;
+}
+
+function normalizeCartItems(items) {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((row) => {
+      const product = row?.productId;
+      if (!product?._id) return null;
+
+      const qty = Number(row?.quantity ?? 1) || 1;
+      const img = product.image || product.img || "/images/sample.jpg";
+
+      return {
+        _id: product._id,
+        id: product._id,
+        title: product.title,
+        price: product.price,
+        img,
+        qty,
+        category: product.category,
+        description: product.description,
+        rating: product.rating,
+        stock: product.stock,
+      };
+    })
+    .filter(Boolean);
+}
+
 export const CartProvider = ({ children }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(() => Boolean(API_URL));
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!API_URL) {
-      console.error("NEXT_PUBLIC_API_URL is not defined");
-      return;
-    }
-
-    fetch(`${API_URL}/api/cart`)
-      .then(res => res.json())
-      .then(data => {
-        setCartItems(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Cart fetch failed:", err);
-        setLoading(false);
+  const loadCart = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/cart`, {
+        credentials: "include",
       });
-  }, [API_URL]);
 
-  // ✅ CHECK IF ITEM EXISTS
-  const isInCart = (productId) => {
-    return cartItems.some(
-      (item) =>
-        item.id === productId ||
-        item._id === productId ||
-        item.productId === productId
-    );
-  };
-
-  // ✅ TOGGLE CART (ADD / REMOVE)
-  const toggleCart = async (product) => {
-    const productId = product.id || product._id;
-
-    const exists = isInCart(productId);
-
-    // 🔴 REMOVE FROM CART
-    if (exists) {
-      setCartItems((prev) =>
-        prev.filter(
-          (item) =>
-            item.id !== productId &&
-            item._id !== productId &&
-            item.productId !== productId
-        )
-      );
-
-      try {
-        await fetch(`${API_URL}/api/cart?id=${productId}`, {
-          method: 'DELETE'
-        });
-      } catch (error) {
-        console.error("Remove failed:", error);
+      if (res.status === 401) {
+        setCartItems([]);
+        return;
       }
 
-      return;
-    }
-
-    // 🟢 ADD TO CART
-    setCartItems((prev) => [...prev, { ...product, qty: 1 }]);
-
-    try {
-      await fetch(`${API_URL}/api/cart`, {
-        method: 'POST',
-        body: JSON.stringify({ productId, action: 'add' }),
-        headers: { 'Content-Type': 'application/json' }
-      });
-    } catch (error) {
-      console.error("Add failed:", error);
+      const data = await res.json();
+      setCartItems(normalizeCartItems(data?.items));
+    } catch (err) {
+      console.error("Cart fetch failed:", err);
+      setCartItems([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateQuantity = async (productId, newQty) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        (item.id === productId || item._id === productId || item.productId === productId)
-          ? { ...item, qty: newQty }
-          : item
-      )
-    );
+  useEffect(() => {
+    if (!API_URL) return;
+    loadCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [API_URL]);
 
+  useEffect(() => {
+    const onAuthChanged = () => loadCart();
+    window.addEventListener("auth-changed", onAuthChanged);
+    return () => window.removeEventListener("auth-changed", onAuthChanged);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [API_URL]);
+
+  const isInCart = (productId) =>
+    cartItems.some((item) => String(item?._id) === String(productId));
+
+  const addToCart = async (product, quantity = 1) => {
     try {
-      await fetch(`${API_URL}/api/cart`, {
-        method: 'PATCH',
-        body: JSON.stringify({ productId, qty: newQty }),
-        headers: { 'Content-Type': 'application/json' }
+      const productId = product?._id || product?.id;
+      if (!productId) return false;
+
+      const res = await fetch(`${API_URL}/api/cart/add`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, quantity }),
       });
-    } catch (error) {
-      console.error("Failed to sync quantity:", error);
+
+      if (res.status === 401) {
+        redirectToLogin();
+        return false;
+      }
+
+      await loadCart();
+      return true;
+    } catch (err) {
+      console.error("Cart add failed:", err);
+      return false;
+    }
+  };
+
+  const toggleCart = async (product) => {
+    try {
+      const productId = product?._id || product?.id;
+      if (!productId) return;
+
+      const res = await fetch(`${API_URL}/api/cart/toggle`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (res.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      await loadCart();
+    } catch (err) {
+      console.error("Cart toggle failed:", err);
+    }
+  };
+
+  const removeFromCart = async (productId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/cart/remove`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (res.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      await loadCart();
+    } catch (err) {
+      console.error("Cart remove failed:", err);
+    }
+  };
+
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      const res = await fetch(`${API_URL}/api/cart/quantity`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, quantity }),
+      });
+
+      if (res.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      await loadCart();
+    } catch (err) {
+      console.error("Cart quantity update failed:", err);
     }
   };
 
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      toggleCart,
-      updateQuantity,
-      loading,
-      isInCart
-    }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        loading,
+        isInCart,
+        addToCart,
+        toggleCart,
+        removeFromCart,
+        updateQuantity,
+        refreshCart: loadCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
 };
 
 export const useCart = () => useContext(CartContext);
+

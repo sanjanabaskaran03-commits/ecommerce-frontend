@@ -93,38 +93,56 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
         >
           <motion.div animate={cartAnimate ? { scale: 1.2 } : { scale: 1 }}>
             <IconButton
-              size="small"
-              disableRipple
-              onClick={handleCartClick}
-              sx={{
-                color: inCart ? "#fff" : "#0D6EFD",
-                border: "1px solid",
-                borderColor: isDark ? "#30363D" : "#DEE2E7",
-                "&:hover": {
-                  bgcolor: inCart ? "#0B5ED7" : "#f5f5f5",
-                },
-              }}
-            >
-              {inCart ? <ShoppingCartIcon fontSize="small" /> : <ShoppingCartOutlinedIcon fontSize="small" />}
-            </IconButton>
+  size="small"
+  disableRipple
+  onClick={handleCartClick}
+  sx={{
+    bgcolor: inCart ? "#0D6EFD" : (isDark ? "#161B22" : "#fff"),
+    color: inCart ? "#fff" : "#0D6EFD",
+    border: "1px solid",
+    borderColor: inCart ? "#0D6EFD" : (isDark ? "#30363D" : "#DEE2E7"),
+    transition: "all 0.2s ease",
+
+    "&:hover": {
+      bgcolor: "#0D6EFD",
+      color: "#fff",
+      borderColor: "#0D6EFD",
+    },
+  }}
+>
+  {inCart ? (
+    <ShoppingCartIcon sx={{ fontSize: 16 }} />
+  ) : (
+    <ShoppingCartOutlinedIcon sx={{ fontSize: 16 }} />
+  )}
+</IconButton>
           </motion.div>
 
           <motion.div animate={wishAnimate ? { scale: 1.2 } : { scale: 1 }}>
             <IconButton
-              size="small"
-              disableRipple
-              onClick={handleWishlistClick}
-              sx={{
-                color: isWishlisted ? "#fff" : "#0D6EFD",
-                border: "1px solid",
-                borderColor: isDark ? "#30363D" : "#DEE2E7",
-                "&:hover": {
-                  bgcolor: isWishlisted ? "#0B5ED7" : "#f5f5f5",
-                },
-              }}
-            >
-              {isWishlisted ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
-            </IconButton>
+  size="small"
+  disableRipple
+  onClick={handleWishlistClick}
+  sx={{
+    bgcolor: isWishlisted ? "#0D6EFD" : (isDark ? "#161B22" : "#fff"),
+    color: isWishlisted ? "#fff" : "#0D6EFD",
+    border: "1px solid",
+    borderColor: isWishlisted ? "#0D6EFD" : (isDark ? "#30363D" : "#DEE2E7"),
+    transition: "all 0.2s ease",
+
+    "&:hover": {
+      bgcolor: "#0D6EFD",
+      color: "#fff",
+      borderColor: "#0D6EFD",
+    },
+  }}
+>
+  {isWishlisted ? (
+    <FavoriteIcon sx={{ fontSize: 16 }} />
+  ) : (
+    <FavoriteBorderIcon sx={{ fontSize: 16 }} />
+  )}
+</IconButton>
           </motion.div>
         </Box>
       )}
@@ -185,34 +203,57 @@ const ProductCard = ({ product, viewMode = 'list', isFirst = false }) => {
               <Stack direction="row" spacing={1}>
                 <motion.div animate={cartAnimate ? { scale: 1.2 } : { scale: 1 }}>
                   <IconButton
-                    size="small"
-                    disableRipple
-                    onClick={handleCartClick}
-                    sx={{
-                      // bgcolor: inCart ? "#0D6EFD" : "#fff",
-                      color: inCart ? "#fff" : "#0D6EFD",
-                      border: "1px solid",
-                      borderColor: isDark ? "#30363D" : "#DEE2E7",
-                    }}
-                  >
-                    {inCart ? <ShoppingCartIcon sx={{ fontSize: 16 }} /> : <ShoppingCartOutlinedIcon sx={{ fontSize: 16 }} />}
-                  </IconButton>
+  size="small"
+  disableRipple
+  onClick={handleCartClick}
+  sx={{
+    bgcolor: inCart ? activeColor : bgDefault,
+    color: inCart ? "#fff" : activeColor,
+    border: "1px solid",
+    borderColor: inCart ? activeColor : borderDefault,
+    transition: "all 0.2s ease",
+
+    "&:hover": {
+      bgcolor: activeColor,
+      color: "#fff",
+      borderColor: activeColor,
+    },
+  }}
+>
+  {inCart ? (
+    <ShoppingCartIcon sx={{ fontSize: 16 }} />
+  ) : (
+    <ShoppingCartOutlinedIcon sx={{ fontSize: 16 }} />
+  )}
+</IconButton>
+                    
                 </motion.div>
 
                 <motion.div animate={wishAnimate ? { scale: 1.2 } : { scale: 1 }}>
                   <IconButton
-                    size="small"
-                    disableRipple
-                    onClick={handleWishlistClick}
-                    sx={{
-                      bgcolor: isWishlisted ? "#0D6EFD" : "#fff",
-                      color: isWishlisted ? "#fff" : "#0D6EFD",
-                      border: "1px solid",
-                      borderColor: isDark ? "#30363D" : "#DEE2E7",
-                    }}
-                  >
-                    {isWishlisted ? <FavoriteIcon sx={{ fontSize: 16 }} /> : <FavoriteBorderIcon sx={{ fontSize: 16 }} />}
-                  </IconButton>
+  size="small"
+  disableRipple
+  onClick={handleWishlistClick}
+  sx={{
+    bgcolor: isWishlisted ? activeColor : bgDefault,
+    color: isWishlisted ? "#fff" : activeColor,
+    border: "1px solid",
+    borderColor: isWishlisted ? activeColor : borderDefault,
+    transition: "all 0.2s ease",
+
+    "&:hover": {
+      bgcolor: activeColor,
+      color: "#fff",
+      borderColor: activeColor,
+    },
+  }}
+>
+  {isWishlisted ? (
+    <FavoriteIcon sx={{ fontSize: 16 }} />
+  ) : (
+    <FavoriteBorderIcon sx={{ fontSize: 16 }} />
+  )}
+</IconButton>
                 </motion.div>
               </Stack>
             </Stack>

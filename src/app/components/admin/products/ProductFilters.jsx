@@ -20,7 +20,7 @@ export default function ProductFilters({
 
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
-      
+
       {/* 🔍 SEARCH BAR */}
       <TextField
         fullWidth

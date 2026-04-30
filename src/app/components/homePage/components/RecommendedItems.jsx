@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import RecommendedSection from "@/src/app/components/common/RecommendedSection";
 import LayoutContainer from "@/src/app/components/common/LayoutContainer";
+import { getProducts } from "@/src/app/services/productService";
 
 const RecommendedItems = () => {
   const [items, setItems] = useState([]);
@@ -10,17 +11,7 @@ const RecommendedItems = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/products`
-        );
-        const json = await res.json();
-        const products = Array.isArray(json)
-          ? json
-          : Array.isArray(json?.data)
-            ? json.data
-            : Array.isArray(json?.products)
-              ? json.products
-              : [];
+        const products = await getProducts();
 
         if (Array.isArray(products)) {
           const shuffled = [...products].sort(() => 0.5 - Math.random());
@@ -31,7 +22,7 @@ const RecommendedItems = () => {
             id: product._id,
             title: product.title,
             price: product.price,
-            img: product.image,
+            img: product.image || product.img || "/images/sample.jpg",
           }));
 
           setItems(mapped);

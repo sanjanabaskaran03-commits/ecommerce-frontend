@@ -186,7 +186,7 @@ export default function ProductForm({ isEdit, productId }) {
 
   return (
     <Stack spacing={2} sx={{ maxWidth: 1280, mx: "auto" }}>
-      <Typography variant="h5" textAlign="center" fontWeight={600}>
+      <Typography variant="h5" sx={{textAlign:"center"}}  fontWeight={600}>
         {isEdit ? "Edit Product" : "Add Product"}
       </Typography>
 
@@ -249,12 +249,12 @@ export default function ProductForm({ isEdit, productId }) {
           <Stack
             direction="row"
             flexWrap="wrap"   // ✅ correct spelling
-            spacing={{xs:1.5,md:10}}           // ✅ controls space BETWEEN groups
+            spacing={{ xs: 1.5, md: 10 }}           // ✅ controls space BETWEEN groups
             sx={{ width: "100%" }}
           >
-            {[ { label: "Deals", value: "deals" },
-  { label: "Electronics", value: "electronics" },
-  { label: "Home", value: "home" }].map((section) => (
+            {[{ label: "Deals", value: "deals" },
+            { label: "Electronics", value: "electronics" },
+            { label: "Home", value: "home" }].map((section) => (
               <Stack
                 key={section.value}
                 direction="row"
@@ -265,13 +265,13 @@ export default function ProductForm({ isEdit, productId }) {
                   size="small"
                   sx={{ p: 0.5 }}
                   key={section.value}
-checked={form.sectionTags.includes(section.value)}
-onChange={() => handleSectionChange(section.value)}
+                  checked={form.sectionTags.includes(section.value)}
+                  onChange={() => handleSectionChange(section.value)}
                 />
 
                 <Typography
                   sx={{
-                    fontSize: { xs: "0.75rem",sm:"1.25rem", md: "1rem" },
+                    fontSize: { xs: "0.75rem", sm: "1.25rem", md: "1rem" },
                     lineHeight: 3.5   // ✅ fix vertical alignment
                   }}
                 >

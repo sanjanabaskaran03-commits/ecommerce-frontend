@@ -145,7 +145,6 @@ export default function ProductsPage() {
                 color={p.stock > 0 ? "success" : "error"}
                 size="small"
                 sx={{ my: 0.5, borderRadius:"8px" }}
-               
               />
 
               {/* PRICE + ACTIONS */}
@@ -237,15 +236,15 @@ export default function ProductsPage() {
 
                 <TableCell>
                   <Chip
-  label={p.stock > 0 ? "In Stock" : "Out of Stock"}
-  size="small"
-  sx={{
-    bgcolor: p.stock > 0 ? "success.main" : "error.main",
-    color: "text.primary", // ✅ always readable
-    fontWeight: 600,
-    borderRadius: "8px"
-  }}
-/>
+                    label={p.stock > 0 ? "In Stock" : "Out of Stock"}
+                    size="small"
+                    sx={{
+                      bgcolor: p.stock > 0 ? "success.main" : "error.main",
+                      color: "#fff", // ✅ always readable
+                      fontWeight: 600,
+                      borderRadius: "8px"
+                    }}
+                  />
                 </TableCell>
 
                 <TableCell align="right">

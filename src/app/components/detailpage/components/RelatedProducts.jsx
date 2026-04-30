@@ -1,20 +1,18 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from "next/navigation"; 
 import {
-  Box,
-  Typography,
-  Stack,
-  useTheme,
-  CircularProgress
+  Box, Typography, Stack, useTheme, CircularProgress
 } from '@mui/material';
 import LayoutContainer from '@/src/app/components/common/LayoutContainer';
+import { getProducts } from "@/src/app/services/productService";
 
 const RelatedProducts = () => {
   const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
   const borderColor = theme.palette.divider;
+  const router = useRouter();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,14 +21,12 @@ const RelatedProducts = () => {
     const fetchRelated = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/products');
-        const data = await res.json();
+        const data = await getProducts();
 
         if (Array.isArray(data)) {
           const randomProducts = data
             .sort(() => 0.5 - Math.random())
             .slice(0, 6);
-
           setProducts(randomProducts);
         }
       } catch (error) {
@@ -39,7 +35,6 @@ const RelatedProducts = () => {
         setLoading(false);
       }
     };
-
     fetchRelated();
   }, []);
 
@@ -51,7 +46,7 @@ const RelatedProducts = () => {
     );
   }
 
-  if (!products.length) return null;
+  if (products.length === 0) return null;
 
   return (
     <LayoutContainer>
@@ -65,95 +60,94 @@ const RelatedProducts = () => {
           mt: 3
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 600, mb: 3, color: 'text.primary' }}
-        >
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: 'text.primary', textAlign: 'left' }}>
           Related products
         </Typography>
 
-        <Stack
-          direction="row"
+        <Stack 
+          direction="row" 
           spacing={2}
-          sx={{
-            flexWrap: "nowrap",
-            overflowX: 'auto',
-            pb: 2,
-            '&::-webkit-scrollbar': { height: '4px' },
-            '&::-webkit-scrollbar-thumb': {
-              bgcolor: 'divider',
-              borderRadius: '10px'
+          flexWrap="nowrap"
+          sx={{ 
+            justifyContent: { md: 'space-between' },
+            overflowX: 'auto', 
+            pb: { xs: 2, md: 0 }, 
+            // FIXED: Scrollbar is completely hidden on desktop/md+
+            '&::-webkit-scrollbar': { 
+              height: '4px',
+              display: { xs: 'block', md: 'none' } 
+            },
+            '&::-webkit-scrollbar-thumb': { 
+              bgcolor: 'divider', 
+              borderRadius: '10px' 
+            },
+            // FIXED: Hover effect only shows scrollbar on mobile/xs
+            '&:hover::-webkit-scrollbar': {
+              display: { xs: 'block', md: 'none' }
             }
           }}
         >
           {products.map((item) => (
-            <Link
-              key={item._id}
-              href={`/detail/${item._id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
+            <Stack 
+              key={item._id} 
+              direction="column" 
+              alignItems="flex-start"
+              onClick={() => router.push(`/detail/${item._id}`)}
+              sx={{ 
+                flex: { xs: '0 0 auto', md: '1 1 auto' }, 
+                minWidth: { xs: '140px', md: '120px' },
+                maxWidth: { md: '180px' }, 
+                cursor: 'pointer'
+              }}
             >
-              <Stack
-                direction="column"
+              <Box 
                 sx={{
-                  minWidth: { xs: '140px', md: '120px' },
-                  maxWidth: { md: '180px' },
-                  cursor: 'pointer',
-                  alignItems: "flex-start",
-                  transition: '0.2s',
-                  '&:hover': { transform: 'scale(1.03)' }
+                  position:'relative',
+                  width: '100%', 
+                  height: { xs: 140, md: 160 },
+                  borderRadius: '4px',
+                  border: '1px solid',
+                  borderColor: borderColor,
+                  p: 1,
+                  bgcolor: '#fff', 
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.02)'
+                  }
                 }}
               >
-                {/* Image Box */}
-                <Box
-                  sx={{
-                    position: 'relative',
-                    width: '100%',
-                    height: { xs: 140, md: 160 },
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: borderColor,
-                    p: 1,
-                    bgcolor: '#fff',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <Image
-                    src={item.img}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 140px, 180px"
-                    style={{ objectFit: 'contain', padding: '8px' }}
-                  />
-                </Box>
-
-                {/* Title */}
-                <Typography
-                  sx={{
-                    fontSize: "14px",
-                    fontWeight: 400,
+                <Image
+                  src={item.image || item.img || "/images/sample.jpg"}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 140px, 180px"
+                  style={{ objectFit: 'contain', padding: '8px' }}
+                />
+              </Box>
+              <Box sx={{ width: '100%' }}>
+                <Typography 
+                  sx={{ 
+                    color: 'text.primary', 
+                    fontWeight: 400, 
+                    lineHeight: 1.2, 
+                    fontSize: "14px", 
+                    textAlign: 'left', 
                     mt: 1.5,
-                    color: 'text.primary',
                     display: '-webkit-box',
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'normal'
                   }}
                 >
                   {item.title}
                 </Typography>
-
-                {/* Price */}
-                <Typography
-                  sx={{
-                    fontSize: "14px",
-                    color: '#8B96A5',
-                    mt: 0.5
-                  }}
-                >
+                <Typography sx={{ color: '#8B96A5', mt: 0.5, textAlign: "left", fontSize: "14px" }}>
                   ${item.price}
                 </Typography>
-              </Stack>
-            </Link>
+              </Box>
+            </Stack>
           ))}
         </Stack>
       </Box>

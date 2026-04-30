@@ -22,7 +22,7 @@ const BrandHeader = () => {
   const [user, setUser] = useState(null);
   const themeMode = useContext(ColorModeContext);
   const { cartItems } = useCart();
-  const { wishlistItems } = useWishlist();
+  const { wishlist } = useWishlist();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -72,7 +72,7 @@ const BrandHeader = () => {
       return acc + (isNaN(qty) ? 0 : qty);
     }, 0)
     : 0;
-  const wishlistCount = wishlistItems.length;
+  const wishlistCount = wishlist.length;
 
   const categoryCards = useMemo(() => {
     return productCategories
@@ -125,6 +125,13 @@ const BrandHeader = () => {
 
   const handleProfileOpen = (event) => setProfileAnchorEl(event.currentTarget);
   const handleProfileClose = () => setProfileAnchorEl(null);
+  const requireLoginAndGo = (path) => {
+    if (user) {
+      router.push(path);
+      return;
+    }
+    router.push(`/auth/login?next=${encodeURIComponent(path)}`);
+  };
   const handleLogout = () => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
       method: "POST",
@@ -132,6 +139,7 @@ const BrandHeader = () => {
     })
       .then(() => {
         handleProfileClose();
+        window.dispatchEvent(new Event("auth-changed"));
         router.push("/auth/login"); // redirect after logout
       })
       .catch(() => {
@@ -184,9 +192,12 @@ const BrandHeader = () => {
               <IconButton onClick={themeMode.toggleColorMode}>
                 {isDark ? <WbSunny sx={{ color: '#FFD700' }} /> : <DarkMode sx={{ color: '#4A5568' }} />}
               </IconButton>
-              <Link href="/cart" style={{ textDecoration: 'none' }}>
-                <HeaderAction icon={<Badge badgeContent={cartCount} color="error"><ShoppingCart /></Badge>} label="Cart" mobileHideLabel />
-              </Link>
+              <HeaderAction
+                icon={<Badge badgeContent={cartCount} color="error"><ShoppingCart /></Badge>}
+                label="Cart"
+                mobileHideLabel
+                onClick={() => requireLoginAndGo("/cart")}
+              />
             </Stack>
           </Stack>
 
@@ -257,10 +268,16 @@ const BrandHeader = () => {
           <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center" }}>
             <HeaderAction icon={<Person />} label="Profile" onClick={handleProfileOpen} />
             <HeaderAction icon={<Chat />} label="Message" />
-            <HeaderAction icon={<Badge badgeContent={wishlistCount} color="error"><Favorite /></Badge>} label="Wishlist" />
-            <Link href="/cart" style={{ textDecoration: 'none' }}>
-              <HeaderAction icon={<Badge badgeContent={cartCount} color="error"><ShoppingCart /></Badge>} label="My cart" />
-            </Link>
+            <HeaderAction
+              icon={<Badge badgeContent={wishlistCount} color="error"><Favorite /></Badge>}
+              label="Wishlist"
+              onClick={() => requireLoginAndGo("/wishlist")}
+            />
+            <HeaderAction
+              icon={<Badge badgeContent={cartCount} color="error"><ShoppingCart /></Badge>}
+              label="My cart"
+              onClick={() => requireLoginAndGo("/cart")}
+            />
 
             <IconButton onClick={themeMode.toggleColorMode} size="small">
               {isDark ? (

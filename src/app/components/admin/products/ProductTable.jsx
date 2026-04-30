@@ -55,7 +55,7 @@ export default function ProductTable() {
             {/* IMAGE FIX */}
             <TableCell>
               <img
-               src={p.image?.startsWith("data:image") ? p.image : "/images/sample.jpg"}
+                src={p.image?.startsWith("data:image") ? p.image : "/images/sample.jpg"}
                 alt={p.title}
                 width={50}
                 height={50}

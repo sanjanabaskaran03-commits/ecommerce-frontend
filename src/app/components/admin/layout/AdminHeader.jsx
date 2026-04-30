@@ -76,12 +76,12 @@ export default function AdminHeader() {
           >
 
             {/* 🔥 LEFT SIDE */}
-            <Stack direction="row" sx={{alignItems:"center"}}>
+            <Stack direction="row" sx={{ alignItems: "center" }}>
 
               {/* MOBILE MENU */}
               <IconButton
                 onClick={() => setOpen(true)}
-                sx={{ display: { xs: "flex", md: "none" }}}
+                sx={{ display: { xs: "flex", md: "none" } }}
               >
                 <MenuIcon />
               </IconButton>
@@ -89,7 +89,7 @@ export default function AdminHeader() {
               {/* 🔥 GROUP WRAPPER (IMPORTANT FIX) */}
               <Stack
                 direction="row"
-                sx={{alignItems:"center"}}
+                sx={{ alignItems: "center" }}
                 spacing={4}   // 👈 CONTROL GAP BETWEEN BRAND & MENU HERE
               >
 
@@ -97,7 +97,7 @@ export default function AdminHeader() {
                 <Stack
                   direction="row"
                   spacing={1.5}
-                  sx={{ cursor: "pointer",alignItems:"center" }}
+                  sx={{ cursor: "pointer", alignItems: "center" }}
                   onClick={() => router.push("/admin/dashboard")}
                 >
                   <Box
@@ -160,7 +160,7 @@ export default function AdminHeader() {
             </Stack>
 
             {/* RIGHT */}
-            <Stack direction="row" sx={{alignItems:"center"}} spacing={1.5}>
+            <Stack direction="row" sx={{ alignItems: "center" }} spacing={1.5}>
               <IconButton
                 onClick={toggleColorMode}
                 size="small"

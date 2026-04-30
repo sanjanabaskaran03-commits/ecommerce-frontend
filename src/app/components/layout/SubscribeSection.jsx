@@ -13,7 +13,7 @@ const SubscribeSection = () => {
     <Box sx={{ width: '100%', bgcolor: isDark ? 'background.default' : '#EFF2F4', py: 6 }}>
       <LayoutContainer>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 ,color: 'text.primary'}}>
             Subscribe on our newsletter
           </Typography>
           <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, fontSize: '16px' }}>

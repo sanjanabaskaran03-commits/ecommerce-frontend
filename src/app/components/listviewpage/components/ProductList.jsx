@@ -129,7 +129,7 @@ const ProductList = ({
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2,color:"text.primary" }}>
         {searchParam
           ? `Search results for "${searchParam}"`
           : categoryLabel

@@ -9,9 +9,11 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import LayoutContainer from '@/src/app/components/common/LayoutContainer';
+import { getProductById, getProducts } from "@/src/app/services/productService";
 
-const Description = () => {
-  const { id } = useParams();
+const Description = ({ productId }) => {
+  const params = useParams();
+  const id = productId || params?.id;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('Description');
   const theme = useTheme();
@@ -23,18 +25,18 @@ const Description = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const res = await fetch('/api/products');
-        const allData = await res.json();
-        const current = allData.find((p) => p._id === id) || allData[0];
+        const current = await getProductById(id);
         setProduct(current);
-        const otherProducts = allData.filter((p) => p._id !== current._id);
+
+        const all = await getProducts();
+        const otherProducts = all.filter((p) => p._id !== current._id);
         const shuffled = otherProducts.sort(() => 0.5 - Math.random());
         setRelatedProducts(shuffled.slice(0, 5));
       } catch (err) {
         console.error("Failed to fetch product for description", err);
       }
     };
-    fetchProductDetails();
+    if (id) fetchProductDetails();
   }, [id]);
 
   if (!product) return null;
@@ -77,7 +79,7 @@ const Description = () => {
             </TableContainer>
             <Stack spacing={1}>
               {features.map((text, i) => (
-                <Stack key={i} direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                <Stack key={i} direction="row" spacing={1} alignItems="center">
                   <CheckIcon sx={{ fontSize: 18, color: '#8B96A5' }} />
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>{text}</Typography>
                 </Stack>
@@ -91,7 +93,7 @@ const Description = () => {
           <Stack spacing={3}>
             {[1, 2].map((review) => (
               <Box key={review}>
-                <Stack direction="row" spacing={2} mb={1} sx={{ alignItems: "center" }}>
+                <Stack direction="row" spacing={2} alignItems="center" mb={1}>
                   <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.light' }}>U</Avatar>
                   <Box>
                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Verified Customer</Typography>
@@ -124,7 +126,7 @@ const Description = () => {
 
       case 'About seller':
         return (
-          <Stack direction="row" spacing={3} sx={{ alignItems: "flex-start" }}>
+          <Stack direction="row" spacing={3} alignItems="flex-start">
             <Box sx={{ width: 60, height: 60, bgcolor: '#eff2f4', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#8B96A5' }}>S</Typography>
             </Box>
@@ -148,7 +150,9 @@ const Description = () => {
       <Stack
         direction="row"
         spacing={2}
-        sx={{ mt: 3, mb: 5, alignItems: "stretch", justifyContent: "space-between" }}
+        justifyContent="space-between"
+        alignItems="stretch"
+        sx={{ mt: 3, mb: 5 }}
       >
         {/* Main Content (Left) */}
         <Stack sx={{ flex: 3 }}>
@@ -210,14 +214,15 @@ const Description = () => {
                   key={item._id} 
                   direction="row" 
                   spacing={2} 
+                  alignItems="center"
                   onClick={() => router.push(`/detail/${item._id}`)}
-                  sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 }, alignItems: "center" }}
+                  sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 } }}
                 >
                   <Box sx={{ 
                     width: 80, height: 80, border: '1px solid #E0E7EE', borderRadius: '6px', p: 1,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, bgcolor: '#fff'
                   }}>
-                    <Image src={item.img} width={60} height={60} style={{ objectFit: 'contain' }} alt={item.title} />
+                    <Image src={item.image || item.img || "/images/sample.jpg"} width={60} height={60} style={{ objectFit: 'contain' }} alt={item.title} />
                   </Box>
                   <Box>
                     <Typography sx={{ fontSize: "14px", fontWeight: 400, color: 'text.primary', lineHeight: 1.3, mb: 0.5 }}>
