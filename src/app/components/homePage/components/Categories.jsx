@@ -17,9 +17,7 @@ const Categories = () => {
 
     const loadSections = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/products`
-        );
+        const res = await fetch(`/api/products`);
         const json = await res.json();
         const allProducts = Array.isArray(json)
           ? json

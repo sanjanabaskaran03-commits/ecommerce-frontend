@@ -11,15 +11,16 @@ const Discount = () => {
         sx={{
           borderRadius: '10px',
           mt: 3,
+          mb:3,
           overflow: 'hidden',
           background: 'linear-gradient(58deg, #237CFF 65%, #005ADE 65%)',
-          mb: 10
+         
         }}
       >
         <Stack
           direction={{ xs: 'column', md: 'row' }}
-          textAlign={{ xs: 'center', md: 'left' }}
-          sx={{ p: { xs: 3, md: 4 }, gap: 3, alignItems: "center", justifyContent: "space-between" }}
+          
+          sx={{ textAlign:{ xs: 'center', md: 'left' },p: { xs: 3, md: 4 }, gap: 3, alignItems: "center", justifyContent: "space-between" }}
         >
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "600", color: "#fff" }}>
@@ -34,7 +35,7 @@ const Discount = () => {
             variant="contained"
             sx={{
               bgcolor: '#FF9017',
-              color: '#fff',
+              // color: '#fff',
               textTransform: 'none',
               px: 3,
               py: 1,

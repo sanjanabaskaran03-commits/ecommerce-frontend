@@ -1,22 +1,26 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Button, CircularProgress, Stack, Typography } from "@mui/material";
+import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useTheme } from '@mui/material/styles'; 
 import LayoutContainer from "@/src/app/components/common/LayoutContainer";
 import { useWishlist } from "@/src/app/context/WishlistContext";
+import WishlistView from "@/src/app/components/wishlist/WishlistView";
 
 export default function WishlistPage() {
   const router = useRouter();
-  const { wishlist, loading, toggleWishlist, isInWishlist, refreshWishlist } =
-    useWishlist();
+  const { loading, refreshWishlist } = useWishlist();
+
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+   const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
 
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+        const res = await fetch(`/api/auth/me`, {
           credentials: "include",
         });
         setIsAuthed(res.ok);
@@ -31,9 +35,9 @@ export default function WishlistPage() {
 
   useEffect(() => {
     if (isAuthed) refreshWishlist();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthed]);
 
+  /* LOADING */
   if (loading && !authChecked) {
     return (
       <LayoutContainer>
@@ -44,16 +48,20 @@ export default function WishlistPage() {
     );
   }
 
+  /* NOT LOGGED IN */
   if (!isAuthed) {
     return (
-      <LayoutContainer>
+      <Box sx={{ bgcolor: "background.default", minHeight: "100vh",pt:3,pb:3}}>
+      <LayoutContainer >
         <Box sx={{ py: 6 }}>
-          <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
+          <Typography variant="h5" fontWeight={700} sx={{ mb: 2 ,color:"text.primary"}}>
             Wishlist
           </Typography>
+
           <Typography sx={{ color: "text.secondary", mb: 3 }}>
             Please login to view your wishlist.
           </Typography>
+
           <Button
             variant="contained"
             onClick={() => router.push("/auth/login?next=/wishlist")}
@@ -63,88 +71,21 @@ export default function WishlistPage() {
           </Button>
         </Box>
       </LayoutContainer>
+      </Box>
     );
   }
 
-  const products = wishlist
-    .map((w) => w?.productId)
-    .filter(Boolean);
-
+  /* MAIN */
   return (
+    <Box sx={{ bgcolor: "background.default", minHeight: "100vh",pt:3,pb:3}}>
     <LayoutContainer>
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
-          Wishlist ({products.length})
+        <Typography variant="h5" fontWeight={700} sx={{ mb: 2 ,color:"text.primary"}}>
+          Wishlist
         </Typography>
 
-        {products.length === 0 ? (
-          <Typography sx={{ color: "text.secondary" }}>
-            Your wishlist is empty.
-          </Typography>
-        ) : (
-          <Stack spacing={2}>
-            {products.map((p) => {
-              const img = p.image || p.img || "/images/sample.jpg";
-              const saved = isInWishlist(p._id);
-
-              return (
-                <Box
-                  key={p._id}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    p: 2,
-                    borderRadius: "8px",
-                    bgcolor: "background.paper",
-                    border: "1px solid",
-                    borderColor: "divider",
-                    gap: 2,
-                  }}
-                >
-                  <Box
-                    sx={{ display: "flex", alignItems: "center", gap: 2, minWidth: 0 }}
-                    onClick={() => router.push(`/detail/${p._id}`)}
-                  >
-                    <Box
-                      component="img"
-                      src={img}
-                      alt={p.title}
-                      sx={{
-                        width: 72,
-                        height: 72,
-                        objectFit: "contain",
-                        bgcolor: "#fff",
-                        borderRadius: "6px",
-                        border: "1px solid",
-                        borderColor: "divider",
-                        flexShrink: 0,
-                      }}
-                    />
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography fontWeight={600} noWrap>
-                        {p.title}
-                      </Typography>
-                      <Typography sx={{ color: "text.secondary" }}>
-                        ${p.price}
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  <Button
-                    variant={saved ? "outlined" : "contained"}
-                    onClick={() => toggleWishlist(p)}
-                    sx={{ textTransform: "none", whiteSpace: "nowrap" }}
-                  >
-                    {saved ? "Remove" : "Save"}
-                  </Button>
-                </Box>
-              );
-            })}
-          </Stack>
-        )}
+        <WishlistView />
+        </LayoutContainer>
       </Box>
-    </LayoutContainer>
+    
   );
 }
-

@@ -47,30 +47,30 @@ const HeroSection = ({ productId }) => {
   const isAdded = isInCart(activeProduct?._id);
 
   useEffect(() => {
-  if (!id) return;
+    if (!id) return;
 
-  const loadData = async () => {
-    try {
-      const current = await getProductById(id);
-      setActiveProduct(current);
+    const loadData = async () => {
+      try {
+        const current = await getProductById(id);
+        setActiveProduct(current);
 
-      if (current.category) {
-        const data = await getProducts({ category: current.category });
+        if (current.category) {
+          const data = await getProducts({ category: current.category });
 
-        const related = data
-          .filter((item) => item._id !== current._id)
-          .slice(0, 5);
+          const related = data
+            .filter((item) => item._id !== current._id)
+            .slice(0, 5);
 
-        setRelatedThumbnails(related);
+          setRelatedThumbnails(related);
+        }
+
+      } catch (err) {
+        console.error("HeroSection fetch error", err);
       }
+    };
 
-    } catch (err) {
-      console.error("HeroSection fetch error", err);
-    }
-  };
-
-  loadData();
-}, [id]); // ✅ FIXED
+    loadData();
+  }, [id]); // ✅ FIXED
 
   if (!activeProduct) return null;
 
@@ -350,13 +350,13 @@ const HeroSection = ({ productId }) => {
 
           {/* Wishlist */}
           <Button
-  fullWidth
-  startIcon={isSaved ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-  onClick={() => toggleWishlist(activeProduct)}
-  sx={{ mt: 2 }}
->
-  {isSaved ? "Saved" : "Save for later"}
-</Button>
+            fullWidth
+            startIcon={isSaved ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            onClick={() => toggleWishlist(activeProduct)}
+            sx={{ mt: 2 }}
+          >
+            {isSaved ? "Saved" : "Save for later"}
+          </Button>
           {/* Cart */}
           <Button
             fullWidth

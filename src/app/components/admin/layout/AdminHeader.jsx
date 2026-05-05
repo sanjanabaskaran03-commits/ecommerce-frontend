@@ -44,7 +44,7 @@ export default function AdminHeader() {
   ];
 
   const handleLogout = () => {
-    fetch("http://localhost:5000/api/auth/logout", {
+    fetch("/api/auth/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {

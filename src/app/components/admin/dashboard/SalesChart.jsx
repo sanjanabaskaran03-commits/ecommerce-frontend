@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Box, Typography, useTheme } from "@mui/material";
+import { unwrapProductsResponse } from "@/src/app/utils/productFilters";
 
 export default function SalesChart() {
   const theme = useTheme();
@@ -18,8 +19,9 @@ export default function SalesChart() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
-        const products = await res.json();
+        const res = await fetch("/api/products", { credentials: "include" });
+        const json = await res.json();
+        const products = unwrapProductsResponse(json);
 
         const chartData = products.map((p, i) => ({
           name: p.title?.slice(0, 10) || `Item ${i + 1}`,
@@ -49,8 +51,8 @@ export default function SalesChart() {
         Sales Overview
       </Typography>
 
-      <Box sx={{ width: "100%", height: 300 }}>
-        <ResponsiveContainer>
+      <Box sx={{ width: "100%", height: 300, minWidth: 0, minHeight: 0 }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
           <LineChart data={data}>
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />

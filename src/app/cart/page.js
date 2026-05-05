@@ -8,12 +8,15 @@ import LayoutContainer from '@/src/app/components/common/LayoutContainer';
 
 const Cart = () => {
   return (
-    <>
+    <Box sx={{ bgcolor: "background.default", minHeight: "100vh",pt:3,pb:3}}>
+      <LayoutContainer>
         <CartItem />
         <Label />
         <SavedForLater />
         <Discount />
-        </>
+        </LayoutContainer>
+        </Box>
+        
   );
 };
 

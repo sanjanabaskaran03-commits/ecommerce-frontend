@@ -12,13 +12,12 @@ function redirectToLogin() {
 }
 
 export const WishlistProvider = ({ children }) => {
-  const API = process.env.NEXT_PUBLIC_API_URL;
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchWishlist = async () => {
     try {
-      const res = await fetch(`${API}/api/wishlist`, {
+      const res = await fetch(`/api/wishlist`, {
         credentials: "include",
       });
 
@@ -38,42 +37,42 @@ export const WishlistProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!API) return;
     fetchWishlist();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [API]);
+  }, []);
 
   useEffect(() => {
     const onAuthChanged = () => fetchWishlist();
     window.addEventListener("auth-changed", onAuthChanged);
     return () => window.removeEventListener("auth-changed", onAuthChanged);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [API]);
+  }, []);
 
-  const toggleWishlist = async (product) => {
-    try {
-      const productId = product?._id || product?.id;
-      if (!productId) return;
+ const toggleWishlist = async (product) => {
+  try {
+    const productId = product?._id || product?.id;
 
-      const res = await fetch(`${API}/api/wishlist`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId }),
-      });
+    const res = await fetch(`/api/wishlist`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId }),
+    });
 
-      if (res.status === 401) {
-        redirectToLogin();
-        return;
-      }
-
-      await fetchWishlist();
-    } catch (err) {
-      console.error("Wishlist toggle failed:", err);
+    if (res.status === 401) {
+      redirectToLogin();
+      return;
     }
-  };
+
+    await fetchWishlist();
+
+    // ✅ IMPORTANT: notify other components
+    window.dispatchEvent(new Event("auth-changed"));
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const isInWishlist = (productId) => {
     const id = String(productId);

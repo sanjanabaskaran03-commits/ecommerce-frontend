@@ -65,7 +65,7 @@ const Description = ({ productId }) => {
             <Typography variant="body1" sx={{ color: 'text.primary', mb: 3, lineHeight: 1.6 }}>
               {product.description || "Detailed information about this product is currently being updated."}
             </Typography>
-            <TableContainer component={Box} sx={{ maxWidth: 450, mb: 3, border: '1px solid', borderColor: '#E0E7EE', borderRadius: '4px' }}>
+            <TableContainer component={Box} sx={{ maxWidth: 450, mb: 3, border: '1px solid', borderColor: "divider", borderRadius: '4px' }}>
               <Table size="small">
                 <TableBody>
                   {specs.map((row) => (
@@ -150,9 +150,9 @@ const Description = ({ productId }) => {
       <Stack
         direction="row"
         spacing={2}
-        justifyContent="space-between"
+        
         alignItems="stretch"
-        sx={{ mt: 3, mb: 5 }}
+        sx={{ mt: 3, mb: 5 ,justifyContent:"space-between"}}
       >
         {/* Main Content (Left) */}
         <Stack sx={{ flex: 3 }}>
@@ -219,8 +219,8 @@ const Description = ({ productId }) => {
                   sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 } }}
                 >
                   <Box sx={{ 
-                    width: 80, height: 80, border: '1px solid #E0E7EE', borderRadius: '6px', p: 1,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, bgcolor: '#fff'
+                    width: 80, height: 80, borderRadius: '6px', p: 1,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     <Image src={item.image || item.img || "/images/sample.jpg"} width={60} height={60} style={{ objectFit: 'contain' }} alt={item.title} />
                   </Box>

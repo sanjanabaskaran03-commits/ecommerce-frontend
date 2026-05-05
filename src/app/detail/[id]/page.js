@@ -6,6 +6,7 @@ import Description from "@/src/app/components/detailpage/components/Description"
 import RelatedProducts from "@/src/app/components/detailpage/components/RelatedProducts";
 import Discount from "@/src/app/components/layout/Discount";
 import BreadCrumbSection from "@/src/app/components/listviewpage/components/BreadCrumbSection";
+import {Box} from "@mui/material"
 
 export default function DetailsPage() {
   const params = useParams();
@@ -14,12 +15,12 @@ export default function DetailsPage() {
   if (!productId) return null;
 
   return (
-    <>
+    <Box sx={{ bgcolor: 'background.default'}}>
       <BreadCrumbSection />
       <HeroSection productId={productId} /> 
       <Description productId={productId} />
       <RelatedProducts />
       <Discount />
-    </>
+      </Box>
   );
 }

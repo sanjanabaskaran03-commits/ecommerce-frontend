@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import StatsCard from "@/src/app/components/admin/dashboard/StatsCard";
 import SalesChart from "@/src/app/components/admin/dashboard/SalesChart";
 import RecentOrders from "@/src/app/components/admin/dashboard/RecentOrders";
+import { unwrapProductsResponse } from "@/src/app/utils/productFilters";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
@@ -17,8 +18,9 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
-        const data = await res.json();
+        const res = await fetch("/api/products", { credentials: "include" });
+        const json = await res.json();
+        const data = unwrapProductsResponse(json);
 
         console.log("PRODUCTS FROM API:", data); // 🔍 debug
 

@@ -1,7 +1,6 @@
 import { unwrapProductsResponse } from "@/src/app/utils/productFilters";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:5000";
+const BASE_URL = "";
 
 async function fetchJson(url, options) {
   const res = await fetch(url, options);

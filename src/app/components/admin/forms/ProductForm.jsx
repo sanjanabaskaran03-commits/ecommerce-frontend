@@ -44,7 +44,7 @@ export default function ProductForm({ isEdit, productId }) {
   useEffect(() => {
     if (!isEdit || !productId) return;
 
-    fetch(`http://localhost:5000/api/products/${productId}`)
+    fetch(`/api/products/${productId}`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setForm({
@@ -138,9 +138,7 @@ export default function ProductForm({ isEdit, productId }) {
       image: imageBase64
     };
 
-    const url = isEdit
-      ? `http://localhost:5000/api/products/${productId}`
-      : `http://localhost:5000/api/products`;
+    const url = isEdit ? `/api/products/${productId}` : `/api/products`;
 
     const method = isEdit ? "PUT" : "POST";
 
@@ -201,7 +199,7 @@ export default function ProductForm({ isEdit, productId }) {
 
       <Row>
         {/* ✅ NOW sx works */}
-        <Field label="Stock Quantity" sx={{}}>
+        <Field label="Stock Quantity">
           <TextField name="stock" value={form.stock} onChange={handleChange} fullWidth />
         </Field>
 

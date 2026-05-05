@@ -11,6 +11,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { unwrapProductsResponse } from "@/src/app/utils/productFilters";
 
 export default function ProductTable() {
   const router = useRouter();
@@ -19,16 +20,17 @@ export default function ProductTable() {
 
   // FETCH PRODUCTS
   useEffect(() => {
-    fetch("http://localhost:5000/api/products?mode=admin")
+    fetch("/api/products?mode=admin", { credentials: "include" })
       .then((res) => res.json())
-      .then((data) => setProducts(data || []))
+      .then((json) => setProducts(unwrapProductsResponse(json)))
       .catch((err) => console.log(err));
   }, []);
 
   // DELETE PRODUCT
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/api/products/${id}`, {
+    fetch(`/api/products/${id}`, {
       method: "DELETE",
+      credentials: "include",
     })
       .then((res) => res.json())
       .then(() => {

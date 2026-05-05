@@ -38,8 +38,7 @@ export default function LoginForm() {
 
   const handleLogin = async () => {
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${API}/api/auth/login`, {
+      const res = await fetch(`/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

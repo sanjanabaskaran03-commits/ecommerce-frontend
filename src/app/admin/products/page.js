@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import ProductFilters from "@/src/app/components/admin/products/ProductFilters";
+import { unwrapProductsResponse } from "@/src/app/utils/productFilters";
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -31,9 +32,9 @@ export default function ProductsPage() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products?mode=admin")
+    fetch("/api/products?mode=admin", { credentials: "include" })
       .then((res) => res.json())
-      .then((data) => setProducts(data.data || []))
+      .then((json) => setProducts(unwrapProductsResponse(json)))
       .finally(() => setLoading(false))
       .catch((err) => console.error(err));
   }, []);
@@ -41,7 +42,7 @@ export default function ProductsPage() {
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
 
-    fetch(`http://localhost:5000/api/products/${id}`, { method: "DELETE" })
+    fetch(`/api/products/${id}`, { method: "DELETE", credentials: "include" })
       .then(() => {
         setProducts((prev) => prev.filter((p) => p._id !== id));
       })
@@ -142,9 +143,10 @@ export default function ProductsPage() {
               {/* STATUS */}
               <Chip
                 label={p.stock > 0 ? "In Stock" : "Out of Stock"}
-                color={p.stock > 0 ? "success" : "error"}
+                
                 size="small"
-                sx={{ my: 0.5, borderRadius:"8px" }}
+                sx={{ my: 0.5, borderRadius:"8px",bgcolor: p.stock > 0 ? "success.main" : "error.main",
+                      color: "#fff",}}
               />
 
               {/* PRICE + ACTIONS */}

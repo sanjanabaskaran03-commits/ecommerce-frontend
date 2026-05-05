@@ -38,11 +38,9 @@ const ProductList = ({
       setLoading(true);
 
       try {
-        const API = process.env.NEXT_PUBLIC_API_URL;
-
         const url = categoryLabel
-          ? `${API}/api/products?category=${encodeURIComponent(categoryLabel)}`
-          : `${API}/api/products`;
+          ? `/api/products?category=${encodeURIComponent(categoryLabel)}`
+          : `/api/products`;
 
         const res = await fetch(url);
         const json = await res.json();

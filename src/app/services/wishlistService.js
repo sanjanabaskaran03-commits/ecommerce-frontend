@@ -1,4 +1,4 @@
-const API = process.env.NEXT_PUBLIC_API_URL;
+const API = "";
 const USER_ID = "user123";
 
 export const toggleWishlistAPI = async (productId) => {

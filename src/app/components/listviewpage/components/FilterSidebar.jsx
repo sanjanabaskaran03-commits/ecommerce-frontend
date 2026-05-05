@@ -63,8 +63,7 @@ const FilterSidebar = ({
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const API = process.env.NEXT_PUBLIC_API_URL;
-        const res = await fetch(`${API}/api/products`);
+        const res = await fetch(`/api/products`);
         const json = await res.json();
         const products = unwrapProductsResponse(json);
 

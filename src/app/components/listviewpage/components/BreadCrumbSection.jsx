@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import { usePathname, useSearchParams, useParams } from 'next/navigation';
 import LayoutContainer from '@/src/app/components/common/LayoutContainer';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE = "";
 
 const BreadcrumbSection = () => {
   const theme = useTheme();

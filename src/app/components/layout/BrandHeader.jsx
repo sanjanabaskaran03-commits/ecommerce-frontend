@@ -46,7 +46,7 @@ const BrandHeader = () => {
   useEffect(() => {
     const fetchHeaderData = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
+        const res = await fetch(`/api/products`);
         const json = await res.json();
         const productsArray = Array.isArray(json)
           ? json
@@ -66,12 +66,7 @@ const BrandHeader = () => {
     if (mounted) fetchHeaderData();
   }, [mounted]);
 
-  const cartCount = Array.isArray(cartItems)
-    ? cartItems.reduce((acc, item) => {
-      const qty = parseInt(item?.qty, 10);
-      return acc + (isNaN(qty) ? 0 : qty);
-    }, 0)
-    : 0;
+  const cartCount = Array.isArray(cartItems) ? cartItems.length : 0;
   const wishlistCount = wishlist.length;
 
   const categoryCards = useMemo(() => {
@@ -133,7 +128,7 @@ const BrandHeader = () => {
     router.push(`/auth/login?next=${encodeURIComponent(path)}`);
   };
   const handleLogout = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+    fetch(`/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     })
@@ -148,7 +143,7 @@ const BrandHeader = () => {
   };
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+    fetch(`/api/auth/me`, {
       credentials: "include",
     })
       .then((res) => {
@@ -267,7 +262,11 @@ const BrandHeader = () => {
           {/* Desktop Header Actions */}
           <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center" }}>
             <HeaderAction icon={<Person />} label="Profile" onClick={handleProfileOpen} />
-            <HeaderAction icon={<Chat />} label="Message" />
+            <HeaderAction
+              icon={<ShoppingBag />}
+              label="Orders"
+              onClick={() => requireLoginAndGo("/orders")}
+            />
             <HeaderAction
               icon={<Badge badgeContent={wishlistCount} color="error"><Favorite /></Badge>}
               label="Wishlist"

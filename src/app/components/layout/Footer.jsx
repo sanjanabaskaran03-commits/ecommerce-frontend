@@ -41,13 +41,13 @@ const Footer = () => {
 
   return (
     <Box component="footer" sx={{ bgcolor: 'background.paper', pt: { xs: 4, md: 6 }, width: '100%' }}>
-      
-      <Container 
-        maxWidth={false} 
-        sx={{ 
+
+      <Container
+        maxWidth={false}
+        sx={{
           maxWidth: "1280px",
-    margin: "0 auto",
-    px: 2, 
+          margin: "0 auto",
+          px: 2,
           pb: 6,
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
@@ -56,9 +56,9 @@ const Footer = () => {
           gap: { xs: 4, md: 2, lg: 4 }
         }}
       >
-        <Box sx={{ 
+        <Box sx={{
           flex: { xs: '1 1 100%', sm: '1 1 30%', md: '0 0 250px' },
-          textAlign: "left" 
+          textAlign: "left"
         }}>
           <Stack spacing={2}>
             <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
@@ -83,10 +83,10 @@ const Footer = () => {
         </Box>
 
         {/* LINKS SECTION */}
-        <Box 
-          sx={{ 
-            flex: 1, 
-            display: 'grid', 
+        <Box
+          sx={{
+            flex: 1,
+            display: 'grid',
             // 2 columns on mobile, 4 columns on desktop
             gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
             gap: 3,
@@ -109,7 +109,7 @@ const Footer = () => {
         </Box>
 
         {/* APP SECTION */}
-        <Box sx={{ 
+        <Box sx={{
           flex: { xs: '1 1 100%', sm: '1 1 100%', md: '0 0 124px' },
           mt: { xs: 2, md: 0 }
         }}>
@@ -136,15 +136,15 @@ const Footer = () => {
       </Container>
 
       <Box sx={{ bgcolor: isDark ? 'rgba(255,255,255,0.05)' : '#EFF2F4', py: 2.5, width: '100%' }}>
-        <Container 
+        <Container
           maxWidth="false"
-          sx={{ 
+          sx={{
             maxWidth: "1280px",
-    margin: "0 auto",
-    px: 2,
-            display: 'flex', 
+            margin: "0 auto",
+            px: 2,
+            display: 'flex',
             flexDirection: { xs: 'row', sm: 'row' },
-            justifyContent: 'space-between', 
+            justifyContent: 'space-between',
             alignItems: 'center',
             gap: { xs: 2, sm: 0 }
           }}
